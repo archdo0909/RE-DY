@@ -1365,6 +1365,7 @@ void node_simulation(int view_con){
 	int l = 0;
 	int h = 0;
 	int s = 0;
+	int E = i + num_count * 0.5;
 	double min = 100000.0;
 	double max = -10.0;
 	double mass = 1000;
@@ -1380,6 +1381,20 @@ void node_simulation(int view_con){
 			node_surface2[i].acc.x[j] = 0.0;
 		}
 	}
+//edge node
+#if 0
+	for (i = 0; i < num_count; i++){
+		for (k = 0; k < 3; k++){
+			if (node_surface2[i].edge_flag = 1){
+				if (i < num_count * 0.5){
+					int j = i + num_count * 0.5;
+					node_surface2[i].pos.x[k] = node_surface2[j].pos.x[k];
+				}
+			}
+		}
+	}
+#endif
+
 	for (i = 0; i <= num_count - 1; i++){
 		node_surface2[i].color_grad = 0.0;
 		for (j = 0; j <= num_count - 1; j++){
@@ -1395,6 +1410,13 @@ void node_simulation(int view_con){
 						//printf("%lf\n", -1.0 * damp_k * (node_surface2[i].pos.x[k] - node_surface2[j].pos.x[k]) * (temp_len - edge[i][j].len) / temp_len / mass);
 					}
 				}
+			}
+		}
+	}
+	for (i = 0; i < num_count * 0.5; i++){
+		for (k = 0; k < 3; k++){
+			if (node_surface2[i].edge_flag == 1){
+				node_surface2[i].pos.x[k]
 			}
 		}
 	}
@@ -1471,12 +1493,35 @@ void node_simulation(int view_con){
 	for (i = 0; i < num_count; i++){
 		for (k = 0; k < 3; k++){
 			if (node_surface2[i].edge_flag == 1){
-				node_surface2[i].acc.x[k] = 0;
-				node_surface2[i].del_pos.x[k] = 0;
+				if (i < num_count * 0.5){
+					int j = i + num_count * 0.5;
+					node_surface2[i].acc.x[k] = 0.0;
+					node_surface2[i].pos.x[k] = node_surface2[j].pos.x[k];
+				}
+				else{
+					node_surface2[i].del_pos.x[k] = node_surface2[i].del_pos.x[k] + node_surface2[i].acc.x[k] * kizami;
+					node_surface2[i].pos.x[k] = node_surface2[i].pos.x[k] + node_surface2[i].del_pos.x[k] * kizami + 1.0 / 2.0 * node_surface2[i].acc.x[k] * kizami * kizami;
+				}
+			}
+			else{
+				node_surface2[i].del_pos.x[k] = node_surface2[i].del_pos.x[k] + node_surface2[i].acc.x[k] * kizami;
 				node_surface2[i].pos.x[k] = node_surface2[i].pos.x[k] + node_surface2[i].del_pos.x[k] * kizami + 1.0 / 2.0 * node_surface2[i].acc.x[k] * kizami * kizami;
 			}
-			node_surface2[i].del_pos.x[k] = node_surface2[i].del_pos.x[k] + node_surface2[i].acc.x[k] * kizami;
-			node_surface2[i].pos.x[k] = node_surface2[i].pos.x[k] + node_surface2[i].del_pos.x[k] * kizami + 1.0 / 2.0 * node_surface2[i].acc.x[k] * kizami * kizami;
+		}
+	}
+#endif
+#if 0
+	for (i = 0; i < num_count; i++){
+		for (k = 0; k < 3; k++){
+			if (node_surface2[i].edge_flag == 1){
+				node_surface2[i].del_pos.x[k] = 0;
+				node_surface2[i].acc.x[k] = 0;
+				node_surface2[i].pos.x[k] = node_surface2[i].pos.x[k] + node_surface2[i].del_pos.x[k] * kizami + 1.0 / 2.0 * node_surface2[i].acc.x[k] * kizami * kizami;
+			}
+			else{
+				node_surface2[i].del_pos.x[k] = node_surface2[i].del_pos.x[k] + node_surface2[i].acc.x[k] * kizami;
+				node_surface2[i].pos.x[k] = node_surface2[i].pos.x[k] + node_surface2[i].del_pos.x[k] * kizami + 1.0 / 2.0 * node_surface2[i].acc.x[k] * kizami * kizami;
+			}
 		}
 	}
 #endif
