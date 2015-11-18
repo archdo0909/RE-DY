@@ -37,12 +37,12 @@ double wall_n = 5.0;
 int num_count = 0;
 int con_count = 0;
 int tri_count = 0;
-double damp_k = 500.0;
-double damp_k_normal = 10;
+double damp_k = 2000.0;
+double damp_k_normal = 20;
 double dv = 1.0;
 double node_Radius = 0.08;
-double View_from[3] = { 0.0, 25.0, 20.0 };
-double View_to[3] = { 0.0, -10.0, 0.0 };
+double View_from[3] = { 0.0, 15.0, 23.0 };
+double View_to[3] = { 0.0, -15.0, 0.0 };
 GLUnurbsObj *theNurb;
 typedef struct{
 	double x[3];
@@ -1405,21 +1405,14 @@ void node_simulation(int view_con){
 				//printf("a");
 				if (temp_len > edge[i][j].len){
 					for (k = 0; k < 3; k++){
-						node_surface2[i].color_grad += fabs(-1000.0 * damp_k * (node_surface2[i].pos.x[k] - node_surface2[j].pos.x[k]) * (temp_len - edge[i][j].len) / temp_len / mass);
-						node_surface2[i].acc.x[k] += -1000.0 * damp_k * (node_surface2[i].pos.x[k] - node_surface2[j].pos.x[k]) * (temp_len - edge[i][j].len) / temp_len / mass;
-						//printf("%lf\n", -1.0 * damp_k * (node_surface2[i].pos.x[k] - node_surface2[j].pos.x[k]) * (temp_len - edge[i][j].len) / temp_len / mass);
+							node_surface2[i].color_grad += fabs(-1000.0 * damp_k * (node_surface2[i].pos.x[k] - node_surface2[j].pos.x[k]) * (temp_len - edge[i][j].len) / temp_len / mass);
+							node_surface2[i].acc.x[k] += -1000.0 * damp_k * (node_surface2[i].pos.x[k] - node_surface2[j].pos.x[k]) * (temp_len - edge[i][j].len) / temp_len / mass;
+							//printf("%lf\n", -1.0 * damp_k * (node_surface2[i].pos.x[k] - node_surface2[j].pos.x[k]) * (temp_len - edge[i][j].len) / temp_len / mass);
+						}
 					}
 				}
 			}
 		}
-	}
-	for (i = 0; i < num_count * 0.5; i++){
-		for (k = 0; k < 3; k++){
-			if (node_surface2[i].edge_flag == 1){
-				node_surface2[i].pos.x[k]
-			}
-		}
-	}
 	if (open_flag == true){
 		wall_z += 0.01;
 	}
@@ -1493,14 +1486,17 @@ void node_simulation(int view_con){
 	for (i = 0; i < num_count; i++){
 		for (k = 0; k < 3; k++){
 			if (node_surface2[i].edge_flag == 1){
-				if (i < num_count * 0.5){
-					int j = i + num_count * 0.5;
-					node_surface2[i].acc.x[k] = 0.0;
-					node_surface2[i].pos.x[k] = node_surface2[j].pos.x[k];
-				}
-				else{
-					node_surface2[i].del_pos.x[k] = node_surface2[i].del_pos.x[k] + node_surface2[i].acc.x[k] * kizami;
-					node_surface2[i].pos.x[k] = node_surface2[i].pos.x[k] + node_surface2[i].del_pos.x[k] * kizami + 1.0 / 2.0 * node_surface2[i].acc.x[k] * kizami * kizami;
+				for (k = 0; k < 3; k++){
+					//printf("i = %d\n", i);
+					if (i < num_count * 0.5){
+						for (k = 0; k < 3; k++){
+							int j = i + num_count * 0.5;
+							node_surface2[i].pos.x[k] = node_surface2[j].pos.x[k];
+							//	printf("i = %d,j = %d\n", i, j);
+						}
+						node_surface2[i].del_pos.x[k] = node_surface2[i].del_pos.x[k] + node_surface2[i].acc.x[k] * kizami;
+						node_surface2[i].pos.x[k] = node_surface2[i].pos.x[k] + node_surface2[i].del_pos.x[k] * kizami + 1.0 / 2.0 * node_surface2[i].acc.x[k] * kizami * kizami;
+					}
 				}
 			}
 			else{
