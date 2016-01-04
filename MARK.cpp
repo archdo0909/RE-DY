@@ -11,6 +11,7 @@
 
 #define judge 0.0001
 #define e_judge 0.000000001
+#define side_num 10
 //#define node_Num_m 11
 //#define node_Num_n 21
 int node_Num_m[2];
@@ -29,6 +30,8 @@ GLfloat blue[] = { 0.0 / 256.0, 65.0 / 256.0, 255.0 / 256.0, 0.4 };
 GLfloat white[] = { 1.0, 1.0, 1.0, 1.0 };
 GLfloat blue2[] = { 102.0 / 256.0, 204.0 / 256.0, 255.0 / 256.0, 0.9 };
 GLfloat blue_node[] = { 0.5, 0.5, 1.0, 1.0 };
+bool up_flag = false;
+bool down_flag = false;
 int w_view;
 int h_view;
 int first_count = 1;
@@ -37,12 +40,20 @@ double wall_n = 5.0;
 int num_count = 0;
 int con_count = 0;
 int tri_count = 0;
-double damp_k = 2000.0;
+double damp_k = 1000.0;
 double damp_k_normal = 20;
-double dv = 1.0;
+double dv = 3.0;
 double node_Radius = 0.08;
-double View_from[3] = { 0.0, 30.0, 23.0 };
+double View_from[3] = { 0.0, 50.0, 20.0 };
 double View_to[3] = { 0.0, -15.0, 0.0 };
+double View_from2[3] = { 0.0, 13.0, 0.01 };
+double View_to2[3] = { 0.0, -10.0, 0.0 };
+double View_from3[3] = { 0.0, 13.0, 0.01 };
+double View_to3[3] = { 0.0, -10.0, 0.0 };
+bool MouseFlagRight = false;
+bool MouseFlagLeft = false;
+bool MouseFlagMiddle = false;
+bool View_point_flag = false;
 GLUnurbsObj *theNurb;
 typedef struct{
 	double x[3];
@@ -56,6 +67,8 @@ typedef struct{
 	int t[3];
 	int color;
 	double normal[3];
+	double A;
+	double total;
 }triangle_d;
 typedef struct{
 	bool torf;
@@ -89,11 +102,11 @@ typedef struct{
 	face face;
 }point;
 static node2 node_surface2[10000];
-static node node_surface[100][100][3];
-static edge_d edge[500][500];
+static node node_surface[500][500][2];
+static edge_d edge[5000][5000];
 static face face_info[3];
 static point node_point[3][4]; //node_point[face Num][coordinate Num]
-static triangle_d triangle_data[11 * 21 * 8];
+static triangle_d triangle_data[10000];
 void get_info(){
 	int i;
 	int j;
@@ -164,147 +177,67 @@ void sphere(double R, double precise, GLfloat sph_col[10]){
 
 	gluSphere(sphere, R, precise, precise);
 }
-//void upperAndleft(int s){
-//	
-//	natural_length();
-//
-//	int h = 0;
-//	int i = 0; 
-//	int j = 0;
-//	int k = 0;
-//	int trirem1[3];
-//	int trirem2[3];
-//	int trirem3[3];
-//	int trirem4[3];
-//	int trirem5[3];
-//	int flag = 0;
-//	int tri_flag1;
-//	int tri_flag2;
-//	int tri_flag3;
-//	int tri_flag4;
-//	int tri_flag5;
-//	double tritemp_x;
-//	double tritemp_y;
-//	double natural_length_x[3];
-//	double natural_length_y[3];
-//
-//	static node node_surface[100][100][3];
-//
-//	for(h = 0; h < num_count; h++){
-//		tri_flag3 = 0;
-//		//for (s = 0; s < 2; s++){
-//		if (h >= s * node_Num_m[s] * node_Num_n[s] && h < (s + 1) * node_Num_m[s] * node_Num_n[s]){
-//			for (i = 0; i <= (node_Num_m[s] - 1) / 2; i++){
-//				for (j = 0; j <= (node_Num_n[s] - 1) / 2; j++){
-//					if (node_surface[i][j][s].number == h && node_surface[i][j][s].none_flag != 1){
-//						//if (node_surface[i][j][s].number == h){
-//						trirem1[0] = i;
-//						trirem1[1] = j;
-//						trirem1[2] = s;
-//						tri_flag3 = 1;
-//					}
-//				}
-//			}
-//			//printf("trirem1[0]=%d\n", trirem1[0]);
-//			tri_flag1 = 0;
-//			tri_flag2 = 0;
-//			tri_flag4 = 0;
-//			tri_flag5 = 0;
-//			//for (s = 0; s < 2; s++){
-//			for (i = 0; i <= (node_Num_m[s] - 1) / 2; i++){
-//				for (j = 0; j <= (node_Num_n[s] - 1) / 2; j++){
-//					if (node_surface[i][j][s].none_flag != 1){
-//						tritemp_x = node_surface[trirem1[0]][trirem1[1]][trirem1[2]].pos.x[0] - node_surface[i][j][s].pos.x[0];
-//						tritemp_y = node_surface[trirem1[0]][trirem1[1]][trirem1[2]].pos.x[1] - node_surface[i][j][s].pos.x[1];
-//						if (fabs(tritemp_x + natural_length_x[s]) < judge && fabs(tritemp_y) < judge){
-//							trirem2[0] = i;
-//							trirem2[1] = j;
-//							trirem2[2] = s;
-//							tri_flag1 = 1;
-//						}
-//						if (fabs(tritemp_x + natural_length_x[s]) < judge && fabs(tritemp_y + natural_length_y[s]) < judge){
-//							trirem3[0] = i;
-//							trirem3[1] = j;
-//							trirem3[2] = s;
-//							tri_flag2 = 1;
-//						}
-//						if (fabs(tritemp_x + natural_length_x[s]) < judge && fabs(tritemp_y + natural_length_y[s]) < judge){
-//							trirem4[0] = i;
-//							trirem4[1] = j;
-//							trirem4[2] = s;
-//							tri_flag4 = 1;
-//						}
-//						if (fabs(tritemp_x) < judge && fabs(tritemp_y + natural_length_y[s]) < judge){
-//							trirem5[0] = i;
-//							trirem5[1] = j;
-//							trirem5[2] = s;
-//							tri_flag5 = 1;
-//						}
-//					}
-//				}
-//			}
-//			//}
-//			if (tri_flag1 == 1 && tri_flag2 == 1 && tri_flag3 == 1){
-//				if (tri_count == 0){
-//					triangle_data[tri_count].t[0] = h;
-//					triangle_data[tri_count].t[1] = node_surface[trirem2[0]][trirem2[1]][trirem2[2]].number;
-//					triangle_data[tri_count].t[2] = node_surface[trirem3[0]][trirem3[1]][trirem3[2]].number;
-//					triangle_data[tri_count].color = 1;
-//					tri_count++;
-//				}
-//				else{
-//					flag = 0;
-//					for (i = 0; i < tri_count; i++){
-//						if ((triangle_data[i].t[0] == h) && (triangle_data[i].t[1] == node_surface[trirem2[0]][trirem2[1]][trirem2[2]].number)
-//							&& (triangle_data[i].t[2] = node_surface[trirem3[0]][trirem3[1]][trirem3[2]].number)){
-//							flag = 1;
-//						}
-//						//printf("a\n");
-//					}
-//					if (flag == 0){
-//						triangle_data[tri_count].t[0] = h;
-//						triangle_data[tri_count].t[1] = node_surface[trirem2[0]][trirem2[1]][trirem2[2]].number;
-//						triangle_data[tri_count].t[2] = node_surface[trirem3[0]][trirem3[1]][trirem3[2]].number;
-//						triangle_data[tri_count].color = 1;
-//						tri_count++;
-//					}
-//					else{
-//						flag = 0;
-//					}
-//				}
-//			}
-//			if (tri_flag4 == 1 && tri_flag5 == 1 && tri_flag3 == 1){
-//				if (tri_count == 0){
-//					triangle_data[tri_count].t[0] = h;
-//					triangle_data[tri_count].t[1] = node_surface[trirem4[0]][trirem4[1]][trirem4[2]].number;
-//					triangle_data[tri_count].t[2] = node_surface[trirem5[0]][trirem5[1]][trirem5[2]].number;
-//					triangle_data[tri_count].color = 1;
-//					tri_count++;
-//				}
-//				else{
-//					flag = 0;
-//					for (i = 0; i < tri_count; i++){
-//						if ((triangle_data[i].t[0] == h) && (triangle_data[i].t[1] == node_surface[trirem4[0]][trirem4[1]][trirem4[2]].number)
-//							&& (triangle_data[i].t[2] = node_surface[trirem5[0]][trirem5[1]][trirem5[2]].number)){
-//							flag = 1;
-//						}
-//						//printf("a\n");
-//					}
-//					if (flag == 0){
-//						triangle_data[tri_count].t[0] = h;
-//						triangle_data[tri_count].t[1] = node_surface[trirem4[0]][trirem4[1]][trirem4[2]].number;
-//						triangle_data[tri_count].t[2] = node_surface[trirem5[0]][trirem5[1]][trirem5[2]].number;
-//						triangle_data[tri_count].color = 1;
-//						tri_count++;
-//					}
-//					else{
-//						flag = 0;
-//					}
-//				}
-//			}
-//		}
-//	}
-//}
+void View_control(bool vector_flag){
+	double View_distance;
+	double temp[5];
+	temp[2] = View_from[2] - View_to[2];
+	temp[1] = View_from[0] - View_to[0];
+	temp[0] = pow(temp[1], 2.0) + pow(temp[2], 2.0);
+	View_distance = pow(temp[0], 0.5);
+	//	printf("%f\n", View_distance);
+	temp[0] = View_from[2] - View_to[2];
+	temp[3] = temp[0] / View_distance;
+	temp[1] = View_from[0] - View_to[0];
+	temp[4] = temp[1] / View_distance;
+	temp[2] = atan2(temp[4], temp[3]);
+	//temp[2] = acos(temp[1]);
+	if (vector_flag) temp[2] = temp[2] + 0.01;
+	else temp[2] = temp[2] - 0.01;
+	temp[0] = View_distance * cos(temp[2]);
+	temp[1] = View_distance * sin(temp[2]);
+	View_from[2] = View_to[2] + temp[0];
+	View_from[0] = View_to[0] + temp[1];
+}
+void View_control_up_down(bool vector_flag){
+	double View_distance;
+	double temp[5];
+	temp[2] = View_from[1] - View_to[1];
+	temp[1] = View_from[0] - View_to[0];
+	temp[0] = pow(temp[1], 2.0) + pow(temp[2], 2.0);
+	View_distance = pow(temp[0], 0.5);
+	//	printf("%f\n", View_distance);
+	temp[0] = View_from[1] - View_to[1];
+	temp[3] = temp[0] / View_distance;
+	temp[1] = View_from[0] - View_to[0];
+	temp[4] = temp[1] / View_distance;
+	temp[2] = atan2(temp[4], temp[3]);
+	//temp[2] = acos(temp[1]);
+	if (vector_flag) temp[2] = temp[2] + 0.01;
+	else temp[2] = temp[2] - 0.01;
+	temp[0] = View_distance * cos(temp[2]);
+	temp[1] = View_distance * sin(temp[2]);
+	View_from[1] = View_to[1] + temp[0];
+	View_from[0] = View_to[0] + temp[1];
+}
+void View_control2(bool vector_flag){
+	double View_distance;
+	double temp[5];
+	temp[2] = View_from2[2] - View_to2[2];
+	temp[1] = View_from2[0] - View_to2[0];
+	temp[0] = pow(temp[1], 2.0) + pow(temp[2], 2.0);
+	View_distance = pow(temp[0], 0.5);
+	temp[0] = View_from2[2] - View_to2[2];
+	temp[3] = temp[0] / View_distance;
+	temp[1] = View_from2[0] - View_to2[0];
+	temp[4] = temp[1] / View_distance;
+	temp[2] = atan2(temp[4], temp[3]);
+	if (vector_flag) temp[2] = temp[2] + 0.01;
+	else temp[2] = temp[2] - 0.01;
+	temp[0] = View_distance * cos(temp[2]);
+	temp[1] = View_distance * sin(temp[2]);
+	View_from2[2] = View_to2[2] + temp[0];
+	View_from2[0] = View_to2[0] + temp[1];
+}
 void initiation(){
 
 	int i = 0;
@@ -352,12 +285,6 @@ void initiation(){
 	natural_length_x[s] = fabs((double)(node_point[s][1].pos.x[0] - node_point[s][0].pos.x[0]) / (double)(node_Num_m - 1));
 	natural_length_y[s] = fabs((double)(node_point[s][2].pos.x[1] - node_point[s][1].pos.x[1]) / (double)(node_Num_n - 1));
 	}*/
-#if 0
-	for (s = 0; s < 2; s++){
-		natural_length_x[s] = fabs(((double)(node_point[s][1].pos.x[0] - node_point[s][0].pos.x[0])) / (double)(node_Num_m[s] - 1));
-		natural_length_y[s] = fabs(((double)(node_point[s][2].pos.x[1] - node_point[s][1].pos.x[1])) / (double)(node_Num_n[s] - 1));
-	}
-#endif
 
 	///rectangle
 	//for (s = 0; s < 2; s++){
@@ -387,11 +314,11 @@ void initiation(){
 	///triangle node position
 #if 1
 	for (s = 0; s < 2; s++){
-		for (i = 0; i < 20; i++){
+		for (i = 0; i < side_num; i++){
 			for (j = 0; j <= i; j++){
 				if (i % 2 == 0){
 					node_surface[i][j][s].pos.x[0] = (double)((0.0) + (j - (i / 2))*natural_length);
-					//printf("x = %f, i = %d, j = %d\n", node_surface[i][j][s].pos.x[0], i, j);
+				    //printf("x = %f, i = %d, j = %d\n", node_surface[i][j][s].pos.x[0], i, j);
 				}
 				else{
 					node_surface[i][j][s].pos.x[0] = (double)(((-i * 0.5) + j)*natural_length);
@@ -406,9 +333,9 @@ void initiation(){
 	//sealing edge
 #if 1
 	for (s = 0; s < 2; s++){
-		for (i = 0; i < 20; i++){
+		for (i = 0; i < side_num; i++){
 			for (j = 0; j <= i; j++){
-				if (j == 0 || j == i || i == 19){
+				if (j == 0 || j == i || i == side_num - 1){
 					node_surface[i][j][s].edge_flag = 1;
 					node_surface[i][j][s].none_flag = 0;
 				}
@@ -454,7 +381,7 @@ void initiation(){
 	}
 #endif
 	for (s = 0; s < 2; s++){
-		for (i = 0; i < 20; i++){
+		for (i = 0; i < side_num; i++){
 			for (j = 0; j <= i; j++){
 				node_surface[i][j][s].number = num_count;
 				num_count++;
@@ -1182,7 +1109,7 @@ void initiation(){
 	for (h = 0; h < num_count; h++){
 		for (s = 0; s < 2; s++){
 			tri_flag3 = 0;
-			for (i = 0; i < 20; i++){
+			for (i = 0; i < side_num; i++){
 				for (j = 0; j <= i; j++){
 					if (node_surface[i][j][s].number == h){
 						trirem1[0] = i;
@@ -1196,7 +1123,7 @@ void initiation(){
 			tri_flag2 = 0;
 			tri_flag4 = 0;
 			tri_flag5 = 0;
-			for (i = 0; i < 20; i++){
+			for (i = 0; i < side_num; i++){
 				for (j = 0; j <= i; j++){
 					tritemp_x = node_surface[trirem1[0]][trirem1[1]][trirem1[2]].pos.x[0] - node_surface[i][j][s].pos.x[0];
 					tritemp_y = node_surface[trirem1[0]][trirem1[1]][trirem1[2]].pos.x[1] - node_surface[i][j][s].pos.x[1];
@@ -1240,6 +1167,7 @@ void initiation(){
 						if ((triangle_data[i].t[0] == h) && (triangle_data[i].t[1] == node_surface[trirem2[0]][trirem2[1]][trirem2[2]].number)
 							&& (triangle_data[i].t[2] = node_surface[trirem3[0]][trirem3[1]][trirem3[2]].number)){
 							flag = 1;
+							//printf("tri_data = %d, %d, %d\n", triangle_data[tri_count].t[0], triangle_data[tri_count].t[1], triangle_data[tri_count].t[2]);
 						}
 					}
 					if (flag == 0){
@@ -1308,7 +1236,7 @@ void initiation(){
 	//numbering on triangle
 #if 1
 	for (s = 0; s < 2; s++){
-		for (i = 0; i < 20; i++){
+		for (i = 0; i < side_num; i++){
 			for (j = 0; j <= i; j++){
 				for (h = 0; h < 3; h++){
 					node_surface2[node_surface[i][j][s].number].pos.x[h] = node_surface[i][j][s].pos.x[h];
@@ -1317,9 +1245,9 @@ void initiation(){
 		}
 	}
 	for (s = 0; s < 2; s++){
-		for (i = 0; i < 20; i++){
+		for (i = 0; i < side_num; i++){
 			for (j = 0; j <= i; j++){
-				if (j == 0 || j == i || i == 19){
+				if (j == 0 || j == i || i == side_num - 1){
 					node_surface2[node_surface[i][j][s].number].edge_flag = 1;
 					node_surface2[node_surface[i][j][s].number].none_flag = 0;
 				}
@@ -1328,11 +1256,6 @@ void initiation(){
 					node_surface2[node_surface[i][j][s].number].none_flag = 1;
 				}
 			}
-		}
-	}
-	for (i = 0; i < num_count; i++){
-		if (node_surface2[i].edge_flag == 1){
-			//printf("node = %d\n", i);
 		}
 	}
 #endif	
@@ -1373,10 +1296,8 @@ void initiation(){
 			pow((node_surface2[triangle_data[i].t[0]].pos.x[0] - node_surface2[triangle_data[i].t[2]].pos.x[0]), 2.0) +
 			pow((node_surface2[triangle_data[i].t[0]].pos.x[1] - node_surface2[triangle_data[i].t[2]].pos.x[1]), 2.0) +
 			pow((node_surface2[triangle_data[i].t[0]].pos.x[2] - node_surface2[triangle_data[i].t[2]].pos.x[2]), 2.0));
+		//printf("edge = %f\n", edge[triangle_data[i].t[0]][triangle_data[i].t[1]].len);
 	}
-	//printf("node_surface2[0] = %f, %f, %f\n", node_surface2[0].pos.x[0], node_surface2[0].pos.x[1], node_surface2[0].pos.x[2]);
-
-
 }
 void node_simulation(int view_con){
 	if (first_count == 1){
@@ -1399,6 +1320,7 @@ void node_simulation(int view_con){
 	double normal_force[3];
 	double normal_temp[9];
 	double normal_temp3[3];
+	double pressure;
 
 	for (i = 0; i <= num_count - 1; i++){
 		for (j = 0; j < 3; j++){
@@ -1413,26 +1335,32 @@ void node_simulation(int view_con){
 			if (edge[i][j].torf == 1){
 				//printf("node_surface2[%d] = %f, %f, %f\n", i, node_surface2[i].pos.x[0], node_surface2[i].pos.x[1], node_surface2[i].pos.x[2]);
 				temp_len = sqrt(pow((node_surface2[i].pos.x[0] - node_surface2[j].pos.x[0]), 2.0) + pow((node_surface2[i].pos.x[1] - node_surface2[j].pos.x[1]), 2.0) + pow((node_surface2[i].pos.x[2] - node_surface2[j].pos.x[2]), 2.0));
-				//printf("%d %d %lf %lf\n", i, j, temp_len, edge[i][j].len);
+				//printf("%d %d %lf \n", i, j, temp_len);
 				//printf("a");
-					if (temp_len > edge[i][j].len){
-						for (k = 0; k < 3; k++){
-							node_surface2[i].color_grad += fabs(-1000.0 * damp_k * (node_surface2[i].pos.x[k] - node_surface2[j].pos.x[k]) * (temp_len - edge[i][j].len) / temp_len / mass);
-							node_surface2[i].acc.x[k] += -1000.0 * damp_k * (node_surface2[i].pos.x[k] - node_surface2[j].pos.x[k]) * (temp_len - edge[i][j].len) / temp_len / mass;
-							//printf("%lf\n", -1.0 * damp_k * (node_surface2[i].pos.x[k] - node_surface2[j].pos.x[k]) * (temp_len - edge[i][j].len) / temp_len / mass);
-						}
+				if (temp_len > edge[i][j].len){
+					for (k = 0; k < 3; k++){
+						node_surface2[i].color_grad += fabs(-1000.0 * damp_k * (node_surface2[i].pos.x[k] - node_surface2[j].pos.x[k]) * (temp_len - edge[i][j].len) / temp_len / mass);
+						node_surface2[i].acc.x[k] += -1000.0 * damp_k * (node_surface2[i].pos.x[k] - node_surface2[j].pos.x[k]) * (temp_len - edge[i][j].len) / temp_len / mass;
+						//printf("%lf\n", -1.0 * damp_k * (node_surface2[i].pos.x[k] - node_surface2[j].pos.x[k]) * (temp_len - edge[i][j].len) / temp_len / mass);
 					}
 				}
-				/*if (node_surface2[i].edge_flag == 1){
-					if (temp_len > edge[i][j].len){
-						for (k = 0; k < 2; k++){
-							node_surface2[i].color_grad += fabs(-1000.0 * damp_k * (node_surface2[i].pos.x[k] - node_surface2[j].pos.x[k]) * (temp_len - edge[i][j].len) / temp_len / mass);
-							node_surface2[i].acc.x[k] += -1000.0 * damp_k * (node_surface2[i].pos.x[k] - node_surface2[j].pos.x[k]) * (temp_len - edge[i][j].len) / temp_len / mass;
-						}
-					printf("node_surface_y = %d, %f\n", i,  node_surface2[i].acc.x[1]);
-					}*/
-				}
 			}
+			/*if (node_surface2[i].edge_flag == 1){
+				if (temp_len > edge[i][j].len){
+				for (k = 0; k < 2; k++){
+				node_surface2[i].color_grad += fabs(-1000.0 * damp_k * (node_surface2[i].pos.x[k] - node_surface2[j].pos.x[k]) * (temp_len - edge[i][j].len) / temp_len / mass);
+				node_surface2[i].acc.x[k] += -1000.0 * damp_k * (node_surface2[i].pos.x[k] - node_surface2[j].pos.x[k]) * (temp_len - edge[i][j].len) / temp_len / mass;
+				}
+				printf("node_surface_y = %d, %f\n", i,  node_surface2[i].acc.x[1]);
+				}*/
+		}
+	}
+	//		}
+//	for (i = 0; i < num_count; i++){
+//		printf("acc = %f, %f, %f, %d\n", node_surface2[i].acc.x[0], node_surface2[i].acc.x[1], node_surface2[i].acc.x[2], i);
+//	}
+	
+
 	//edge node
 #if 0
 	for (i = 0; i < num_count; i++){
@@ -1529,6 +1457,11 @@ void node_simulation(int view_con){
 			}
 		}
 	}
+	/*for (i = 0; i < tri_count; i++){
+		triangle_data[i].A = sqrt(pow(normal_force[0], 2.0) + pow(normal_force[1], 2.0) + pow(normal_force[2], 2.0)) * 0.5;
+		triangle_data[i].total = 3 * 0.1 * damp_k_normal * sqrt(pow(normal_force[0], 2.0) + pow(normal_force[1], 2.0) + pow(normal_force[2], 2.0));
+		printf("pressure = %d, %f\n", i, (triangle_data[i].total / triangle_data[i].A));
+	}*/
 #endif
 #if 0
 	for (i = 0; i < num_count; i++){
@@ -1553,6 +1486,47 @@ void node_simulation(int view_con){
 			}
 		}
 	}
+#endif
+#if 1
+	int Nabe[300][5];
+	int cosa[200][5];
+	int cosb[200][5];
+
+	double natural_length = 1.0;
+	for (i = 0; i < num_count; i++){
+		for (j = 0; j < num_count; j++){
+			if (sqrt(pow((node_surface2[i].pos.x[0] - node_surface2[j].pos.x[0]), 2.0) + pow((node_surface2[i].pos.x[1] - node_surface2[j].pos.x[1]), 2.0) + pow((node_surface2[i].pos.x[2] - node_surface2[j].pos.x[2]), 2.0)) < 2.0){
+				if (node_surface2[i].pos.x[0] - node_surface2[j].pos.x[0] < natural_length * 1.5){
+					Nabe[i][0] = j;
+				}
+				if (node_surface2[i].pos.x[0] - node_surface2[j].pos.x[0] < natural_length && node_surface2[i].pos.x[1] - node_surface2[j].pos.x[2] > -1 * sqrt(3) * 0.5 * natural_length * 1.5){
+					Nabe[i][1] = j;
+				}
+				if (node_surface2[i].pos.x[0] - node_surface2[j].pos.x[0] > -1.5 * natural_length && node_surface2[i].pos.x[1] - node_surface2[j].pos.x[2] > -1 * sqrt(3) * 0.5 * natural_length * 1.5){
+					Nabe[i][2] = j;
+				}
+				if (node_surface2[i].pos.x[0] - node_surface2[j].pos.x[0] > -1.5 * natural_length){
+					Nabe[i][3] = j;
+				}
+				if (node_surface2[i].pos.x[0] - node_surface2[j].pos.x[0] > -natural_length && node_surface2[i].pos.x[1] - node_surface2[j].pos.x[1] < sqrt(3) * 0.5 * natural_length * 1.5){
+					Nabe[i][4] = j;
+				}
+				if (node_surface2[i].pos.x[0] - node_surface2[j].pos.x[0] < natural_length && node_surface2[i].pos.x[1] - node_surface2[j].pos.x[1] < sqrt(3) * 0.5 * natural_length * 1.5){
+					Nabe[i][5] = j;
+				}
+			}
+		}
+	}
+	for (i = 0; i < num_count; i++){
+		for (j = 0; j < 6; j++){
+			cosa[i][j] = (((node_surface2[i].pos.x[0] * node_surface2[Nabe[i][5]].pos.x[0])
+				+ (node_surface2[i].pos.x[1] * node_surface2[Nabe[i][5]].pos.x[1]) + (node_surface2[i].pos.x[2] * node_surface2[Nabe[i][5]].pos.x[2]))
+				/ (sqrt(node_surface2[i].pos.x[0]
+				;
+		}
+	}
+
+
 #endif
 #if 1
 	//printf("node_surface_z = %f, %f\n", node_surface2[0].acc.x[1], node_surface2[55].acc.x[1]);
@@ -1622,12 +1596,12 @@ void node_simulation(int view_con){
 			//changing[2] = 0.1;
 			//printf("%f %f %f\n", changing[0], changing[1], changing[2]);
 		}
-		glTranslated((GLdouble)node_surface2[i].pos.x[0], (GLdouble)node_surface2[i].pos.x[2], (GLdouble)node_surface2[i].pos.x[1]);
+		/*glTranslated((GLdouble)node_surface2[i].pos.x[0], (GLdouble)node_surface2[i].pos.x[2], (GLdouble)node_surface2[i].pos.x[1]);
 		if (view_con == 1) glutSolidSphere(node_Radius, 10, 10);
 		else if (view_con == 2){
 			glMaterialfv(GL_FRONT, GL_DIFFUSE, changing);
 			glutSolidCube(node_Radius * 4.0);
-		}
+		}*/
 		glPopMatrix();
 	}
 	glPushMatrix();
@@ -1681,6 +1655,17 @@ void display(void)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
+	if (MouseFlagLeft){
+		if (View_point_flag) View_control(false);
+		else View_control2(false);
+	}
+	else if (MouseFlagRight){
+		if (View_point_flag) View_control(true);
+		else View_control2(true);
+	}
+	if (up_flag) View_control_up_down(true);
+	if (down_flag) View_control_up_down(false);
+
 	gluLookAt(View_from[0], View_from[1], View_from[2], View_to[0], View_to[1], View_to[2], 0.0, 1.0, 0.0);
 	glViewport(0, 0, w_view * 2.0 / 3.0, h_view);
 	glPushMatrix();
@@ -1726,6 +1711,55 @@ void display(void)
 	glutSwapBuffers();
 
 }
+void mouse(int button, int state, int x, int y)
+{
+	switch (button) {
+	case GLUT_LEFT_BUTTON:
+		switch (state) {
+		case GLUT_UP:
+			if (MouseFlagLeft){
+				MouseFlagLeft = false;
+			}
+			break;
+		case GLUT_DOWN:
+			MouseFlagLeft = true;
+			if (x < window_size_x * 2 / 3) View_point_flag = true;
+			else View_point_flag = false;
+			break;
+		default:
+			break;
+		}
+		break;
+	case GLUT_MIDDLE_BUTTON:
+		switch (state) {
+		case GLUT_UP:
+			if (MouseFlagRight) MouseFlagMiddle = false;
+			break;
+		case GLUT_DOWN:
+			MouseFlagMiddle = true;
+			break;
+		default:
+			break;
+		}
+		break;
+	case GLUT_RIGHT_BUTTON:
+		switch (state) {
+		case GLUT_UP:
+			if (MouseFlagRight) MouseFlagRight = false;
+			break;
+		case GLUT_DOWN:
+			MouseFlagRight = true;
+			if (x < window_size_x * 2 / 3) View_point_flag = true;
+			else View_point_flag = false;
+			break;
+		default:
+			break;
+		}
+		break;
+	default:
+		break;
+	}
+}
 void resize(int w, int h)
 {
 	w_view = w;
@@ -1738,6 +1772,34 @@ void resize(int w, int h)
 
 	glMatrixMode(GL_MODELVIEW);
 
+}
+void keyboard(unsigned char key, int x, int y){
+	switch (key){
+	case 'r':
+		close_flag = true;
+		break;
+	case 'e':
+		close_flag = false;
+		break;
+	case 'w':
+		open_flag = true;
+		break;
+	case 'q':
+		open_flag = false;
+		break;
+	case 'y':
+		close_flag_n = true;
+		break;
+	case 'u':
+		close_flag_n = false;
+		break;
+	case 'i':
+		open_flag_n = true;
+		break;
+	case 'o':
+		open_flag_n = false;
+		break;
+	}
 }
 void init(){
 
@@ -1770,6 +1832,8 @@ int main(int argc, char *argv[])
 	glutDisplayFunc(display);
 	glutReshapeFunc(resize);
 	glutIdleFunc(idle);
+	glutMouseFunc(mouse);
+	glutKeyboardFunc(keyboard);
 	/*node_simulation();*/
 	init();
 	glutMainLoop();
