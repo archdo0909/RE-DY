@@ -89,7 +89,7 @@ typedef struct{
 	int edge_flag;			//ノード番号
 	int none_flag;
 	int N[5];
-	face face;
+	int T[5];
 	position pos;		//位置
 	position del_pos;	//速度
 	position acc;		//加速度
@@ -1266,33 +1266,31 @@ void initiation(){
 	////Neighbor vertex Px
 	for (i = 0; i < num_count * 0.5; i++){
 		for (j = 0; j < num_count * 0.5; j++){
-			if (node_surface2[i].edge_flag == 0){
-				if (i != j){
-					if (sqrt(pow((node_surface2[i].pos.x[0] - node_surface2[j].pos.x[0]), 2.0) + pow((node_surface2[i].pos.x[1] - node_surface2[j].pos.x[1]), 2.0) + pow((node_surface2[i].pos.x[2] - node_surface2[j].pos.x[2]), 2.0)) < 1.5){
-						if (node_surface2[i].pos.x[0] < node_surface2[j].pos.x[0] && node_surface2[i].pos.x[1] > node_surface2[j].pos.x[1]){
-							node_surface2[i].N[0] = j;
-							//printf("node_surface2[i].N[0] = %d, %d\n", node_surface2[i].N[0], i);
-						}
-						if (node_surface2[i].pos.x[0] < node_surface2[j].pos.x[0] && node_surface2[i].pos.x[1] - node_surface2[j].pos.x[1] == 0){
-							node_surface2[i].N[1] = j;
-							//printf("N[1] = %d, %d\n", node_surface2[i].N[1], i);
-						}
-						if (node_surface2[i].pos.x[0] < node_surface2[j].pos.x[0] && node_surface2[i].pos.x[1] < node_surface2[j].pos.x[1]){
-							node_surface2[i].N[2] = j;
-							//printf("N[1] = %d, %d \n", node_surface2[i].N[2], i);
-						}
-						if (node_surface2[i].pos.x[0] > node_surface2[j].pos.x[0] && node_surface2[i].pos.x[1] < node_surface2[j].pos.x[1]){
-							node_surface2[i].N[3] = j;
-							//printf("N[1] = %d, %d \n", node_surface2[i].N[3], i);
-						}
-						if (node_surface2[i].pos.x[0] > node_surface2[j].pos.x[0] && node_surface2[i].pos.x[1] - node_surface2[j].pos.x[1] == 0){
-							node_surface2[i].N[4] = j;
-							//printf("N[1] = %d, %d \n", node_surface2[i].N[4], i);
-						}
-						if (node_surface2[i].pos.x[0] > node_surface2[j].pos.x[0] && node_surface2[i].pos.x[1] > node_surface2[j].pos.x[1]){
-							node_surface2[i].N[5] = j;
-							//printf("N[1] = %d, %d \n", node_surface2[i].N[5], i);
-						}
+			if (i != j){
+				if (sqrt(pow((node_surface2[i].pos.x[0] - node_surface2[j].pos.x[0]), 2.0) + pow((node_surface2[i].pos.x[1] - node_surface2[j].pos.x[1]), 2.0) + pow((node_surface2[i].pos.x[2] - node_surface2[j].pos.x[2]), 2.0)) < 1.5){
+					if (node_surface2[i].pos.x[0] < node_surface2[j].pos.x[0] && node_surface2[i].pos.x[1] > node_surface2[j].pos.x[1]){
+						node_surface2[i].N[0] = j;
+						//printf("node_surface2[i].N[0] = %d, %d\n", node_surface2[i].N[0], i);
+					}
+					if (node_surface2[i].pos.x[0] < node_surface2[j].pos.x[0] && node_surface2[i].pos.x[1] - node_surface2[j].pos.x[1] == 0){
+						node_surface2[i].N[1] = j;
+						//printf("N[1] = %d, %d\n", node_surface2[i].N[1], i);
+					}
+					if (node_surface2[i].pos.x[0] < node_surface2[j].pos.x[0] && node_surface2[i].pos.x[1] < node_surface2[j].pos.x[1]){
+						node_surface2[i].N[2] = j;
+						//printf("N[1] = %d, %d \n", node_surface2[i].N[2], i);
+					}
+					if (node_surface2[i].pos.x[0] > node_surface2[j].pos.x[0] && node_surface2[i].pos.x[1] < node_surface2[j].pos.x[1]){
+						node_surface2[i].N[3] = j;
+						//printf("N[1] = %d, %d \n", node_surface2[i].N[3], i);
+					}
+					if (node_surface2[i].pos.x[0] > node_surface2[j].pos.x[0] && node_surface2[i].pos.x[1] - node_surface2[j].pos.x[1] == 0){
+						node_surface2[i].N[4] = j;
+						//printf("N[1] = %d, %d \n", node_surface2[i].N[4], i);
+					}
+					if (node_surface2[i].pos.x[0] > node_surface2[j].pos.x[0] && node_surface2[i].pos.x[1] > node_surface2[j].pos.x[1]){
+						node_surface2[i].N[5] = j;
+						//printf("N[1] = %d, %d \n", node_surface2[i].N[5], i);
 					}
 				}
 			}
@@ -1300,15 +1298,37 @@ void initiation(){
 	}
 
 	//Neighbor Triangle
-	/*for (i = 0; i < num_count; i++){
-	for (j = 0; j < 6; j++){
-	cosa[i][j] = (((node_surface2[i].pos.x[0] * node_surface2[Nabe[i][5]].pos.x[0])
-	+ (node_surface2[i].pos.x[1] * node_surface2[Nabe[i][5]].pos.x[1]) + (node_surface2[i].pos.x[2] * node_surface2[Nabe[i][5]].pos.x[2]))
-	/ (sqrt(node_surface2[i].pos.x[0]
-	;
-	}
-	}*/
-
+	for (i = 0; i < num_count * 0.5; i++){
+		for (j = 0; j < tri_count * 0.5; j++){
+				if (triangle_data[j].t[0] == i || triangle_data[j].t[1] == i || triangle_data[j].t[2] == i){
+					if (triangle_data[j].t[0] == node_surface2[i].N[0]){
+						node_surface2[i].T[0] = j;
+						//printf("T[0] = %d, %d\n", i, node_surface2[i].T[0]);
+					}
+					if (triangle_data[j].t[2] == node_surface2[i].N[2]){
+						node_surface2[i].T[1] = j;
+						//printf("T[0] = %d, %d\n", i, node_surface2[i].T[1]);
+					}
+					if (triangle_data[j].t[1] == node_surface2[i].N[2]){
+						node_surface2[i].T[2] = j;
+						//printf("T[0] = %d, %d\n", i, node_surface2[i].T[2]);
+					}
+					if (triangle_data[j].t[0] == node_surface2[i].N[4]){
+						node_surface2[i].T[3] = j;
+						//printf("T[0] = %d, %d\n", i, node_surface2[i].T[3]);
+					}
+					if (triangle_data[j].t[2] == node_surface2[i].N[4]){
+						node_surface2[i].T[4] = j;
+						//printf("T[0] = %d, %d\n", i, node_surface2[i].T[4]);
+					}
+					if (triangle_data[j].t[1] == node_surface2[i].N[0]){
+						node_surface2[i].T[5] = j;
+						//printf("T[0] = %d, %d\n", i, node_surface2[i].T[5]);
+					}
+				}
+			}
+		}
+	
 
 #endif
 	for (i = 0; i <= num_count - 1; i++){
