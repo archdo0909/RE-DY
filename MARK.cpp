@@ -88,8 +88,7 @@ typedef struct{
 	int number;
 	int edge_flag;			//ノード番号
 	int none_flag;
-	int dup_flag;
-	int sin_flag;
+	int N[5];
 	face face;
 	position pos;		//位置
 	position del_pos;	//速度
@@ -1259,7 +1258,59 @@ void initiation(){
 		}
 	}
 #endif	
+#if 1
+	int Next[300][5];
+	int cosa[200][5];
+	int cosb[200][5];
 
+	////Neighbor vertex Px
+	for (i = 0; i < num_count * 0.5; i++){
+		for (j = 0; j < num_count * 0.5; j++){
+			if (node_surface2[i].edge_flag == 0){
+				if (i != j){
+					if (sqrt(pow((node_surface2[i].pos.x[0] - node_surface2[j].pos.x[0]), 2.0) + pow((node_surface2[i].pos.x[1] - node_surface2[j].pos.x[1]), 2.0) + pow((node_surface2[i].pos.x[2] - node_surface2[j].pos.x[2]), 2.0)) < 1.5){
+						if (node_surface2[i].pos.x[0] < node_surface2[j].pos.x[0] && node_surface2[i].pos.x[1] > node_surface2[j].pos.x[1]){
+							node_surface2[i].N[0] = j;
+							//printf("node_surface2[i].N[0] = %d, %d\n", node_surface2[i].N[0], i);
+						}
+						if (node_surface2[i].pos.x[0] < node_surface2[j].pos.x[0] && node_surface2[i].pos.x[1] - node_surface2[j].pos.x[1] == 0){
+							node_surface2[i].N[1] = j;
+							//printf("N[1] = %d, %d\n", node_surface2[i].N[1], i);
+						}
+						if (node_surface2[i].pos.x[0] < node_surface2[j].pos.x[0] && node_surface2[i].pos.x[1] < node_surface2[j].pos.x[1]){
+							node_surface2[i].N[2] = j;
+							//printf("N[1] = %d, %d \n", node_surface2[i].N[2], i);
+						}
+						if (node_surface2[i].pos.x[0] > node_surface2[j].pos.x[0] && node_surface2[i].pos.x[1] < node_surface2[j].pos.x[1]){
+							node_surface2[i].N[3] = j;
+							//printf("N[1] = %d, %d \n", node_surface2[i].N[3], i);
+						}
+						if (node_surface2[i].pos.x[0] > node_surface2[j].pos.x[0] && node_surface2[i].pos.x[1] - node_surface2[j].pos.x[1] == 0){
+							node_surface2[i].N[4] = j;
+							//printf("N[1] = %d, %d \n", node_surface2[i].N[4], i);
+						}
+						if (node_surface2[i].pos.x[0] > node_surface2[j].pos.x[0] && node_surface2[i].pos.x[1] > node_surface2[j].pos.x[1]){
+							node_surface2[i].N[5] = j;
+							//printf("N[1] = %d, %d \n", node_surface2[i].N[5], i);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	//Neighbor Triangle
+	/*for (i = 0; i < num_count; i++){
+	for (j = 0; j < 6; j++){
+	cosa[i][j] = (((node_surface2[i].pos.x[0] * node_surface2[Nabe[i][5]].pos.x[0])
+	+ (node_surface2[i].pos.x[1] * node_surface2[Nabe[i][5]].pos.x[1]) + (node_surface2[i].pos.x[2] * node_surface2[Nabe[i][5]].pos.x[2]))
+	/ (sqrt(node_surface2[i].pos.x[0]
+	;
+	}
+	}*/
+
+
+#endif
 	for (i = 0; i <= num_count - 1; i++){
 		for (j = 0; j <= num_count - 1; j++){
 			edge[i][j].torf = false;
@@ -1487,47 +1538,7 @@ void node_simulation(int view_con){
 		}
 	}
 #endif
-#if 1
-	int Nabe[300][5];
-	int cosa[200][5];
-	int cosb[200][5];
 
-	double natural_length = 1.0;
-	for (i = 0; i < num_count; i++){
-		for (j = 0; j < num_count; j++){
-			if (sqrt(pow((node_surface2[i].pos.x[0] - node_surface2[j].pos.x[0]), 2.0) + pow((node_surface2[i].pos.x[1] - node_surface2[j].pos.x[1]), 2.0) + pow((node_surface2[i].pos.x[2] - node_surface2[j].pos.x[2]), 2.0)) < 2.0){
-				if (node_surface2[i].pos.x[0] - node_surface2[j].pos.x[0] < natural_length * 1.5){
-					Nabe[i][0] = j;
-				}
-				if (node_surface2[i].pos.x[0] - node_surface2[j].pos.x[0] < natural_length && node_surface2[i].pos.x[1] - node_surface2[j].pos.x[2] > -1 * sqrt(3) * 0.5 * natural_length * 1.5){
-					Nabe[i][1] = j;
-				}
-				if (node_surface2[i].pos.x[0] - node_surface2[j].pos.x[0] > -1.5 * natural_length && node_surface2[i].pos.x[1] - node_surface2[j].pos.x[2] > -1 * sqrt(3) * 0.5 * natural_length * 1.5){
-					Nabe[i][2] = j;
-				}
-				if (node_surface2[i].pos.x[0] - node_surface2[j].pos.x[0] > -1.5 * natural_length){
-					Nabe[i][3] = j;
-				}
-				if (node_surface2[i].pos.x[0] - node_surface2[j].pos.x[0] > -natural_length && node_surface2[i].pos.x[1] - node_surface2[j].pos.x[1] < sqrt(3) * 0.5 * natural_length * 1.5){
-					Nabe[i][4] = j;
-				}
-				if (node_surface2[i].pos.x[0] - node_surface2[j].pos.x[0] < natural_length && node_surface2[i].pos.x[1] - node_surface2[j].pos.x[1] < sqrt(3) * 0.5 * natural_length * 1.5){
-					Nabe[i][5] = j;
-				}
-			}
-		}
-	}
-	for (i = 0; i < num_count; i++){
-		for (j = 0; j < 6; j++){
-			cosa[i][j] = (((node_surface2[i].pos.x[0] * node_surface2[Nabe[i][5]].pos.x[0])
-				+ (node_surface2[i].pos.x[1] * node_surface2[Nabe[i][5]].pos.x[1]) + (node_surface2[i].pos.x[2] * node_surface2[Nabe[i][5]].pos.x[2]))
-				/ (sqrt(node_surface2[i].pos.x[0]
-				;
-		}
-	}
-
-
-#endif
 #if 1
 	//printf("node_surface_z = %f, %f\n", node_surface2[0].acc.x[1], node_surface2[55].acc.x[1]);
 	for (i = 0; i < num_count; i++){
