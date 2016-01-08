@@ -1267,45 +1267,50 @@ void initiation(){
 #if 1
 	////Neighbor vertex Px
 	for (i = 0; i < num_count * 0.5; i++){
+		if (node_surface2[i].edge_flag == 0){
 		for (j = 0; j < num_count * 0.5; j++){
 			if (i != j){
-				if (sqrt(pow((node_surface2[i].pos.x[0] - node_surface2[j].pos.x[0]), 2.0) + pow((node_surface2[i].pos.x[1] - node_surface2[j].pos.x[1]), 2.0) + pow((node_surface2[i].pos.x[2] - node_surface2[j].pos.x[2]), 2.0)) < 1.5){
-					if (node_surface2[i].pos.x[0] < node_surface2[j].pos.x[0] && node_surface2[i].pos.x[1] > node_surface2[j].pos.x[1]){
-						node_surface2[i].N[0] = j;
-						//printf("node_surface2[i].N[0] = %d, %d\n", node_surface2[i].N[0], i);
-					}
-					if (node_surface2[i].pos.x[0] < node_surface2[j].pos.x[0] && node_surface2[i].pos.x[1] - node_surface2[j].pos.x[1] == 0){
-						node_surface2[i].N[1] = j;
-						//printf("N[1] = %d, %d\n", node_surface2[i].N[1], i);
-					}
-					if (node_surface2[i].pos.x[0] < node_surface2[j].pos.x[0] && node_surface2[i].pos.x[1] < node_surface2[j].pos.x[1]){
-						node_surface2[i].N[2] = j;
-						//printf("N[1] = %d, %d \n", node_surface2[i].N[2], i);
-					}
-					if (node_surface2[i].pos.x[0] > node_surface2[j].pos.x[0] && node_surface2[i].pos.x[1] < node_surface2[j].pos.x[1]){
-						node_surface2[i].N[3] = j;
-						//printf("N[1] = %d, %d \n", node_surface2[i].N[3], i);
-					}
-					if (node_surface2[i].pos.x[0] > node_surface2[j].pos.x[0] && node_surface2[i].pos.x[1] - node_surface2[j].pos.x[1] == 0){
-						node_surface2[i].N[4] = j;
-						//printf("N[1] = %d, %d \n", node_surface2[i].N[4], i);
-					}
-					if (node_surface2[i].pos.x[0] > node_surface2[j].pos.x[0] && node_surface2[i].pos.x[1] > node_surface2[j].pos.x[1]){
-						node_surface2[i].N[5] = j;
-						//printf("N[1] = %d, %d \n", node_surface2[i].N[5], i);
+					if (sqrt(pow((node_surface2[i].pos.x[0] - node_surface2[j].pos.x[0]), 2.0) + pow((node_surface2[i].pos.x[1] - node_surface2[j].pos.x[1]), 2.0) + pow((node_surface2[i].pos.x[2] - node_surface2[j].pos.x[2]), 2.0)) < 1.5){
+						if (node_surface2[i].pos.x[0] < node_surface2[j].pos.x[0] && node_surface2[i].pos.x[1] > node_surface2[j].pos.x[1]){
+							node_surface2[i].N[0] = j;
+							//printf("node_surface2[i].N[0] = %d, %d\n", node_surface2[i].N[0], i);
+						}
+						if (node_surface2[i].pos.x[0] < node_surface2[j].pos.x[0] && node_surface2[i].pos.x[1] - node_surface2[j].pos.x[1] == 0){
+							node_surface2[i].N[1] = j;
+							//printf("N[1] = %d, %d\n", node_surface2[i].N[1], i);
+						}
+						if (node_surface2[i].pos.x[0] < node_surface2[j].pos.x[0] && node_surface2[i].pos.x[1] < node_surface2[j].pos.x[1]){
+							node_surface2[i].N[2] = j;
+							//printf("N[1] = %d, %d \n", node_surface2[i].N[2], i);
+						}
+						if (node_surface2[i].pos.x[0] > node_surface2[j].pos.x[0] && node_surface2[i].pos.x[1] < node_surface2[j].pos.x[1]){
+							node_surface2[i].N[3] = j;
+							//printf("N[1] = %d, %d \n", node_surface2[i].N[3], i);
+						}
+						if (node_surface2[i].pos.x[0] > node_surface2[j].pos.x[0] && node_surface2[i].pos.x[1] - node_surface2[j].pos.x[1] == 0){
+							node_surface2[i].N[4] = j;
+							//printf("N[1] = %d, %d \n", node_surface2[i].N[4], i);
+						}
+						if (node_surface2[i].pos.x[0] > node_surface2[j].pos.x[0] && node_surface2[i].pos.x[1] > node_surface2[j].pos.x[1]){
+							node_surface2[i].N[5] = j;
+							//printf("N[5] = %d, %d \n", node_surface2[i].N[5], i);
+						}
 					}
 				}
 			}
 		}
 	}
-	/*for (i = 0; i < 5; i++){
-		for (j = 0; j < 6; j++){
-			printf("N = %d, i = %d, j = %d\n", node_surface2[i].N[j], i, j);
+	for (i = 0; i < num_count * 0.5; i++){
+		if (node_surface2[i].edge_flag == 0){
+			for (j = 0; j < 6; j++){
+				//printf("node_surface2[i].N[j] = %d, %d, %d\n", node_surface2[i].N[j], i, j);
+			}
 		}
-	}*/
+	}
 	//Neighbor Triangle
 	for (i = 0; i < num_count * 0.5; i++){
-		for (j = 0; j < tri_count * 0.5; j++){
+		if (node_surface2[i].edge_flag == 0){
+			for (j = 0; j < tri_count * 0.5; j++){
 				if (triangle_data[j].t[0] == i || triangle_data[j].t[1] == i || triangle_data[j].t[2] == i){
 					if (triangle_data[j].t[0] == node_surface2[i].N[0] && triangle_data[j].t[1] == node_surface2[i].N[1]){
 						node_surface2[i].T[0] = j;
@@ -1327,13 +1332,44 @@ void initiation(){
 						node_surface2[i].T[4] = j;
 						//printf("T[0] = %d, %d\n", i, node_surface2[i].T[4]);
 					}
-					if (triangle_data[j].t[0] == node_surface2[i].N[5] && triangle_data[j].t[1] == node_surface2[i].N[0]){
+					if (triangle_data[j].t[0] == node_surface2[i].N[5] && triangle_data[j].t[1] == node_surface2[i].N[0] && triangle_data[j].t[2] == i){
 						node_surface2[i].T[5] = j;
+						//printf("%f, %f, %d\n", triangle_data[7].t[0], node_surface2[8].N[5], node_surface2[i].T[5]);
 						//printf("T[0] = %d, %d\n", i, node_surface2[i].T[5]);
 					}
 				}
 			}
 		}
+	}
+	for (i = 0; i < num_count * 0.5; i++){
+		if (node_surface2[i].edge_flag == 0){
+			for (j = 0; j < num_count * 0.5; j++){
+				if (i != j){
+					if (sqrt(pow((node_surface2[i].pos.x[0] - node_surface2[j].pos.x[0]), 2.0) + pow((node_surface2[i].pos.x[1] - node_surface2[j].pos.x[1]), 2.0) + pow((node_surface2[i].pos.x[2] - node_surface2[j].pos.x[2]), 2.0)) < 1.5){
+						if (node_surface2[i].pos.x[0] > node_surface2[j].pos.x[0] && node_surface2[i].pos.x[1] > node_surface2[j].pos.x[1]){
+							node_surface2[i].N[5] = j;
+						}
+					}
+				}
+			}
+		}
+	}
+	for (i = 0; i < num_count * 0.5; i++){
+		if (node_surface2[i].edge_flag == 0){
+			for (j = 0; j < 6; j++){
+				//printf("node_surface2[i].N[j] = %d, %d, %d\n", node_surface2[i].N[j], i, j);
+			}
+		}
+	}
+
+	//printf("node_surface2[8].N[5]1 = %d\n", node_surface2[8].N[5]);
+	//for (i = 0; i < num_count * 0.5; i++){
+	//	if (node_surface2[i].edge_flag == 0){
+	//		for (j = 0; j < 6; j++){
+	//			printf("i = %d, j= %d, T = %d\n", i, j, node_surface2[i].T[j]);
+	//		}
+	//	}
+	//}
 	/*for (i = 0; i < num_count * 0.5; i++){
 
 		for (j = 0; j < 6; j++){
@@ -1654,10 +1690,11 @@ void node_simulation(int view_con){
 			//printf("%d, %d, %d\n", node_surface2[i].N[j], i, j);
 		}
 	}
+	//printf("node_surface2[8].N[5] = %d\n", node_surface2[8].N[5]);
 	for (i = 0; i < num_count * 0.5; i++){
-		for (j = 1; j < 5; j++){
-			//for (k = 0; k < 3; k++){
-			if (node_surface2[i].N[j] != NULL){
+		if (node_surface2[i].edge_flag == 0){
+			for (j = 1; j < 5; j++){
+				//for (k = 0; k < 3; k++){
 				//P0P1[k] = (node_surface2[node_surface2[i].N[j]].pos.x[k] - node_surface2[node_surface2[i].N[j - 1]].pos.x[k]);
 				//P0P2[k] = (node_surface2[i].pos.x[k] - node_surface2[node_surface2[i].N[j - 1]].pos.x[k]);
 				//P3P2[k] = (node_surface2[i].pos.x[k] - node_surface2[node_surface2[i].N[j + 1]].pos.x[k]);
@@ -1677,75 +1714,66 @@ void node_simulation(int view_con){
 				//printf("p0p1-1 = %f, p0p1-2 = %f, p0p1-3 = %f\n", P0P1[0], P0P1[1], P0P1[2]);
 				node_surface2[i].cosa[j] = ((P0P1[0] * P0P2[0]) + (P0P1[1] * P0P2[1]) + (P0P1[2] * P0P2[2])) / (sqrt(pow(P0P1[0], 2) + pow(P0P1[1], 2) + pow(P0P1[2], 2)) * sqrt(pow(P0P2[0], 2) + pow(P0P2[1], 2) + pow(P0P2[2], 2)));
 				node_surface2[i].cosb[j] = ((P3P2[0] * P3P1[0]) + (P3P2[1] * P3P1[1]) + (P3P2[2] * P3P1[2])) / (sqrt(pow(P3P2[0], 2) + pow(P3P2[1], 2) + pow(P3P2[2], 2)) * sqrt(pow(P3P1[0], 2) + pow(P3P1[1], 2) + pow(P3P1[2], 2)));
-				//printf("cosa = %f, i = %d,j = %d\n", node_surface2[i].cosa[j], i, j);
-				//}
-				//node_surface2[i].cosa[j] = ((P0P1[0] * P0P2[0]) + (P0P1[1] * P0P2[1]) + (P0P1[2] * P0P2[2])) / (sqrt(pow(P0P1[0], 2) + pow(P0P1[1], 2) + pow(P0P1[2], 2)) * sqrt(pow(P0P2[0], 2) + pow(P0P2[1], 2) + pow(P0P2[2], 2)));
-				//printf("cosa = %f, i = %d,j = %d\n", node_surface2[i].cosa[j], i, j);
-				//	}
+				//printf("cosa = %f, cosb = %f, i = %d,j = %d\n", node_surface2[i].cosa[j], node_surface2[i].cosb[j], i, j);
 			}
-		}
-		for (j = 0; j < 1; j++){
-			if (node_surface2[i].N[0] != NULL){
-				//for (k = 0; k < 3; k++){
-				//P0P1[k] = (node_surface2[node_surface2[i].N[0]].pos.x[k] - node_surface2[node_surface2[i].N[5]].pos.x[k]);
-				//P0P2[k] = (node_surface2[i].pos.x[k] - node_surface2[node_surface2[i].N[5]].pos.x[k]);
-				//P3P2[k] = (node_surface2[i].pos.x[k] - node_surface2[node_surface2[i].N[j + 1]].pos.x[k]);
-				//P3P1[k] = (node_surface2[node_surface2[i].N[j]].pos.x[k] - node_surface2[node_surface2[i].N[j + 1]].pos.x[k]);
-				node_surface2[1].N[0] = 0;
-				P0P1[0] = (node_surface2[node_surface2[i].N[j]].pos.x[0] - node_surface2[node_surface2[i].N[j - 1]].pos.x[0]);
-				P0P1[1] = (node_surface2[node_surface2[i].N[j]].pos.x[1] - node_surface2[node_surface2[i].N[j - 1]].pos.x[1]);
-				P0P1[2] = (node_surface2[node_surface2[i].N[j]].pos.x[2] - node_surface2[node_surface2[i].N[j - 1]].pos.x[2]);
-				P0P2[0] = (node_surface2[i].pos.x[0] - node_surface2[node_surface2[i].N[j - 1]].pos.x[0]);
-				P0P2[1] = (node_surface2[i].pos.x[1] - node_surface2[node_surface2[i].N[j - 1]].pos.x[1]);
-				P0P2[2] = (node_surface2[i].pos.x[2] - node_surface2[node_surface2[i].N[j - 1]].pos.x[2]);
-				P3P2[0] = (node_surface2[i].pos.x[0] - node_surface2[node_surface2[i].N[j + 1]].pos.x[0]);
-				P3P2[1] = (node_surface2[i].pos.x[1] - node_surface2[node_surface2[i].N[j + 1]].pos.x[1]);
-				P3P2[2] = (node_surface2[i].pos.x[2] - node_surface2[node_surface2[i].N[j + 1]].pos.x[2]);
-				P3P1[0] = (node_surface2[node_surface2[i].N[j]].pos.x[0] - node_surface2[node_surface2[i].N[j + 1]].pos.x[0]);
-				P3P1[1] = (node_surface2[node_surface2[i].N[j]].pos.x[1] - node_surface2[node_surface2[i].N[j + 1]].pos.x[1]);
-				P3P1[2] = (node_surface2[node_surface2[i].N[j]].pos.x[2] - node_surface2[node_surface2[i].N[j + 1]].pos.x[2]);
-				node_surface2[i].cosa[j] = ((P0P1[0] * P0P2[0]) + (P0P1[1] * P0P2[1]) + (P0P1[2] * P0P2[2])) / (sqrt(pow(P0P1[0], 2) + pow(P0P1[1], 2) + pow(P0P1[2], 2)) * sqrt(pow(P0P2[0], 2) + pow(P0P2[1], 2) + pow(P0P2[2], 2)));
-				node_surface2[i].cosb[j] = ((P3P2[0] * P3P1[0]) + (P3P2[1] * P3P1[1]) + (P3P2[2] * P3P1[2])) / (sqrt(pow(P3P2[0], 2) + pow(P3P2[1], 2) + pow(P3P2[2], 2)) * sqrt(pow(P3P1[0], 2) + pow(P3P1[1], 2) + pow(P3P1[2], 2)));
-				//printf("cosa = %f, i = %d,j = %d\n", node_surface2[i].cosa[j], i, j);
-				//}
+			for (j = 0; j < 1; j++){
+				for (k = 0; k < 3; k++){
+					/*P0P1[k] = (node_surface2[node_surface2[i].N[0]].pos.x[k] - node_surface2[node_surface2[i].N[5]].pos.x[k]);
+					P0P2[k] = (node_surface2[i].pos.x[k] - node_surface2[node_surface2[i].N[5]].pos.x[k]);
+					P3P2[k] = (node_surface2[i].pos.x[k] - node_surface2[node_surface2[i].N[j + 1]].pos.x[k]);
+					P3P1[k] = (node_surface2[node_surface2[i].N[j]].pos.x[k] - node_surface2[node_surface2[i].N[j + 1]].pos.x[k]);*/
+					P0P1[0] = (node_surface2[node_surface2[i].N[j]].pos.x[0] - node_surface2[node_surface2[i].N[5]].pos.x[0]);
+					P0P1[1] = (node_surface2[node_surface2[i].N[j]].pos.x[1] - node_surface2[node_surface2[i].N[5]].pos.x[1]);
+					P0P1[2] = (node_surface2[node_surface2[i].N[j]].pos.x[2] - node_surface2[node_surface2[i].N[5]].pos.x[2]);
+					P0P2[0] = (node_surface2[i].pos.x[0] - node_surface2[node_surface2[i].N[5]].pos.x[0]);
+					P0P2[1] = (node_surface2[i].pos.x[1] - node_surface2[node_surface2[i].N[5]].pos.x[1]);
+					P0P2[2] = (node_surface2[i].pos.x[2] - node_surface2[node_surface2[i].N[5]].pos.x[2]);
+					P3P2[0] = (node_surface2[i].pos.x[0] - node_surface2[node_surface2[i].N[j + 1]].pos.x[0]);
+					P3P2[1] = (node_surface2[i].pos.x[1] - node_surface2[node_surface2[i].N[j + 1]].pos.x[1]);
+					P3P2[2] = (node_surface2[i].pos.x[2] - node_surface2[node_surface2[i].N[j + 1]].pos.x[2]);
+					P3P1[0] = (node_surface2[node_surface2[i].N[j]].pos.x[0] - node_surface2[node_surface2[i].N[j + 1]].pos.x[0]);
+					P3P1[1] = (node_surface2[node_surface2[i].N[j]].pos.x[1] - node_surface2[node_surface2[i].N[j + 1]].pos.x[1]);
+					P3P1[2] = (node_surface2[node_surface2[i].N[j]].pos.x[2] - node_surface2[node_surface2[i].N[j + 1]].pos.x[2]);
+					node_surface2[i].cosa[j] = ((P0P1[0] * P0P2[0]) + (P0P1[1] * P0P2[1]) + (P0P1[2] * P0P2[2])) / (sqrt(pow(P0P1[0], 2) + pow(P0P1[1], 2) + pow(P0P1[2], 2)) * sqrt(pow(P0P2[0], 2) + pow(P0P2[1], 2) + pow(P0P2[2], 2)));
+					node_surface2[i].cosb[j] = ((P3P2[0] * P3P1[0]) + (P3P2[1] * P3P1[1]) + (P3P2[2] * P3P1[2])) / (sqrt(pow(P3P2[0], 2) + pow(P3P2[1], 2) + pow(P3P2[2], 2)) * sqrt(pow(P3P1[0], 2) + pow(P3P1[1], 2) + pow(P3P1[2], 2)));
+					//printf("cosa = %f, i = %d,j = %d\n", node_surface2[i].cosa[j], i, j);
+					//printf("cosa = %f, cosb = %f, i = %d,j = %d\n", node_surface2[i].cosa[j], node_surface2[i].cosb[j], i, j);
+				}
 			}
-		}
-		for (j = 5; j < 6; j++){
-			if (node_surface2[i].N[0] != NULL){
-				//for (k = 0; k < 3; k++){
-				//P0P1[k] = (node_surface2[node_surface2[i].N[j]].pos.x[k] - node_surface2[node_surface2[i].N[j - 1]].pos.x[k]);
-				//P0P2[k] = (node_surface2[i].pos.x[k] - node_surface2[node_surface2[i].N[j - 1]].pos.x[k]);
-				//P3P2[k] = (node_surface2[i].pos.x[k] - node_surface2[node_surface2[i].N[0]].pos.x[k]);
-				//P3P1[k] = (node_surface2[node_surface2[i].N[j]].pos.x[k] - node_surface2[node_surface2[i].N[0]].pos.x[k]);
-				node_surface2[2].N[5] = 0;
-				P0P1[0] = (node_surface2[node_surface2[i].N[j]].pos.x[0] - node_surface2[node_surface2[i].N[j - 1]].pos.x[0]);
-				P0P1[1] = (node_surface2[node_surface2[i].N[j]].pos.x[1] - node_surface2[node_surface2[i].N[j - 1]].pos.x[1]);
-				P0P1[2] = (node_surface2[node_surface2[i].N[j]].pos.x[2] - node_surface2[node_surface2[i].N[j - 1]].pos.x[2]);
-				P0P2[0] = (node_surface2[i].pos.x[0] - node_surface2[node_surface2[i].N[j - 1]].pos.x[0]);
-				P0P2[1] = (node_surface2[i].pos.x[1] - node_surface2[node_surface2[i].N[j - 1]].pos.x[1]);
-				P0P2[2] = (node_surface2[i].pos.x[2] - node_surface2[node_surface2[i].N[j - 1]].pos.x[2]);
-				P3P2[0] = (node_surface2[i].pos.x[0] - node_surface2[node_surface2[i].N[j + 1]].pos.x[0]);
-				P3P2[1] = (node_surface2[i].pos.x[1] - node_surface2[node_surface2[i].N[j + 1]].pos.x[1]);
-				P3P2[2] = (node_surface2[i].pos.x[2] - node_surface2[node_surface2[i].N[j + 1]].pos.x[2]);
-				P3P1[0] = (node_surface2[node_surface2[i].N[j]].pos.x[0] - node_surface2[node_surface2[i].N[j + 1]].pos.x[0]);
-				P3P1[1] = (node_surface2[node_surface2[i].N[j]].pos.x[1] - node_surface2[node_surface2[i].N[j + 1]].pos.x[1]);
-				P3P1[2] = (node_surface2[node_surface2[i].N[j]].pos.x[2] - node_surface2[node_surface2[i].N[j + 1]].pos.x[2]);
-				node_surface2[i].cosa[j] = ((P0P1[0] * P0P2[0]) + (P0P1[1] * P0P2[1]) + (P0P1[2] * P0P2[2])) / (sqrt(pow(P0P1[0], 2) + pow(P0P1[1], 2) + pow(P0P1[2], 2)) * sqrt(pow(P0P2[0], 2) + pow(P0P2[1], 2) + pow(P0P2[2], 2)));
-				node_surface2[i].cosb[j] = ((P3P2[0] * P3P1[0]) + (P3P2[1] * P3P1[1]) + (P3P2[2] * P3P1[2])) / (sqrt(pow(P3P2[0], 2) + pow(P3P2[1], 2) + pow(P3P2[2], 2)) * sqrt(pow(P3P1[0], 2) + pow(P3P1[1], 2) + pow(P3P1[2], 2)));
-				//}
+			for (j = 5; j < 6; j++){
+				for (k = 0; k < 3; k++){
+					P0P1[k] = (node_surface2[node_surface2[i].N[j]].pos.x[k] - node_surface2[node_surface2[i].N[j - 1]].pos.x[k]);
+					P0P2[k] = (node_surface2[i].pos.x[k] - node_surface2[node_surface2[i].N[j - 1]].pos.x[k]);
+					P3P2[k] = (node_surface2[i].pos.x[k] - node_surface2[node_surface2[i].N[0]].pos.x[k]);
+					P3P1[k] = (node_surface2[node_surface2[i].N[j]].pos.x[k] - node_surface2[node_surface2[i].N[0]].pos.x[k]);
+					/*P0P1[0] = (node_surface2[node_surface2[i].N[j]].pos.x[0] - node_surface2[node_surface2[i].N[j - 1]].pos.x[0]);
+					P0P1[1] = (node_surface2[node_surface2[i].N[j]].pos.x[1] - node_surface2[node_surface2[i].N[j - 1]].pos.x[1]);
+					P0P1[2] = (node_surface2[node_surface2[i].N[j]].pos.x[2] - node_surface2[node_surface2[i].N[j - 1]].pos.x[2]);
+					P0P2[0] = (node_surface2[i].pos.x[0] - node_surface2[node_surface2[i].N[j - 1]].pos.x[0]);
+					P0P2[1] = (node_surface2[i].pos.x[1] - node_surface2[node_surface2[i].N[j - 1]].pos.x[1]);
+					P0P2[2] = (node_surface2[i].pos.x[2] - node_surface2[node_surface2[i].N[j - 1]].pos.x[2]);
+					P3P2[0] = (node_surface2[i].pos.x[0] - node_surface2[node_surface2[i].N[j + 1]].pos.x[0]);
+					P3P2[1] = (node_surface2[i].pos.x[1] - node_surface2[node_surface2[i].N[j + 1]].pos.x[1]);
+					P3P2[2] = (node_surface2[i].pos.x[2] - node_surface2[node_surface2[i].N[j + 1]].pos.x[2]);
+					P3P1[0] = (node_surface2[node_surface2[i].N[j]].pos.x[0] - node_surface2[node_surface2[i].N[j + 1]].pos.x[0]);
+					P3P1[1] = (node_surface2[node_surface2[i].N[j]].pos.x[1] - node_surface2[node_surface2[i].N[j + 1]].pos.x[1]);
+					P3P1[2] = (node_surface2[node_surface2[i].N[j]].pos.x[2] - node_surface2[node_surface2[i].N[j + 1]].pos.x[2]);*/
+					node_surface2[i].cosa[j] = ((P0P1[0] * P0P2[0]) + (P0P1[1] * P0P2[1]) + (P0P1[2] * P0P2[2])) / (sqrt(pow(P0P1[0], 2) + pow(P0P1[1], 2) + pow(P0P1[2], 2)) * sqrt(pow(P0P2[0], 2) + pow(P0P2[1], 2) + pow(P0P2[2], 2)));
+					node_surface2[i].cosb[j] = ((P3P2[0] * P3P1[0]) + (P3P2[1] * P3P1[1]) + (P3P2[2] * P3P1[2])) / (sqrt(pow(P3P2[0], 2) + pow(P3P2[1], 2) + pow(P3P2[2], 2)) * sqrt(pow(P3P1[0], 2) + pow(P3P1[1], 2) + pow(P3P1[2], 2)));
+					//printf("cosa = %f, cosb = %f, i = %d,j = %d\n", node_surface2[i].cosa[j], node_surface2[i].cosb[j], i, j);
+				}
 			}
 		}
 	}
 	for (i = 0; i < num_count * 0.5; i++){
-		for (j = 0; j < 6; j++){
-			node_surface2[i].cota[j] = node_surface2[i].cosa[j] / sqrt(1 - pow(node_surface2[i].cosa[j], 2));
-			node_surface2[i].cotb[j] = node_surface2[i].cosb[j] / sqrt(1 - pow(node_surface2[i].cosb[j], 2));
-			//printf("cota = %f, cotb = %f, %d, %d\n", node_surface2[i].cota[j], node_surface2[i].cotb[j], i, j);
-		}
-		if (node_surface2[i].cota[j] != NULL && node_surface2[i].cotb[j] != NULL){
-			node_surface2[i].cota[j] = node_surface2[i].cota[j];
-			node_surface2[i].cotb[j] = node_surface2[i].cotb[j];
-			//printf("cota = %f, cotb = %f, %d, %d\n", node_surface2[i].cota[j], node_surface2[i].cotb[j], i, j);
+		if (node_surface2[i].edge_flag == 0){
+			for (j = 0; j < 6; j++){
+				node_surface2[i].cota[j] = node_surface2[i].cosa[j] / sqrt(1 - pow(node_surface2[i].cosa[j], 2));
+				node_surface2[i].cotb[j] = node_surface2[i].cosb[j] / sqrt(1 - pow(node_surface2[i].cosb[j], 2));
+				//printf("cota = %f, cotb = %f, %d, %d\n", node_surface2[i].cota[j], node_surface2[i].cotb[j], i, j);
+				//printf("sqrt1 = %f, sqrt2 = %f, i = %d, j = %d\n", sqrt(1 - pow(node_surface2[i].cosa[j], 2)), sqrt(1 - pow(node_surface2[i].cosb[j], 2)), i , j);
+				//printf("sqrt1 = %f, sqrt2 = %f, i = %d, j = %d\n", pow(node_surface2[i].cosa[j], 2), pow(node_surface2[i].cosb[j], 2), i, j);
+			}
 		}
 	}
 
@@ -1753,17 +1781,34 @@ void node_simulation(int view_con){
 		for (j = 0; j < 6; j++){
 			for (k = 0; k < 3; k++){
 				node_surface2[i].m_normal[k] += triangle_data[node_surface2[i].T[j]].normal[k] / (sqrt(pow(triangle_data[node_surface2[i].T[j]].normal[0], 2) + pow(triangle_data[node_surface2[i].T[j]].normal[1], 2) + pow(triangle_data[node_surface2[i].T[j]].normal[2], 2)));
-				printf("n1 = %f, n2 = %f, n3 = %f, %d\n", node_surface2[i].m_normal[0], node_surface2[i].m_normal[1], node_surface2[i].m_normal[2], i);
+				//printf("n1 = %f, n2 = %f, n3 = %f, %d\n", node_surface2[i].m_normal[0], node_surface2[i].m_normal[1], node_surface2[i].m_normal[2], i);
 			}
 		}
 	}
 
+
+	/*for (i = 0; i < num_count * 0.5; i++){
+		for (j = 0; j < 6; j++){
+			printf("xXn = %f, %d\n", (node_surface2[i].pos.x[0] - node_surface2[node_surface2[i].N[j]].pos.x[0]) * node_surface2[i].m_normal[0] , i);
+		}
+	}*/
+	/*for (i = 0; i < num_count * 0.5; i++){
+		for (j = 0; j < 6; j++){
+			if (node_surface2[i].cota[j] != NULL && node_surface2[i].cotb[j] != NULL){
+				printf("cota + cotb = %f, %f, %f, %d, %d\n", (node_surface2[i].cota[j] + node_surface2[i].cotb[j]), node_surface2[i].cota[j], node_surface2[i].cotb[j], i, j);
+			}
+		}
+	}*/
 	for (i = 0; i < num_count * 0.5; i++){
 		for (j = 0; j < 6; j++){
-			node_surface2[i].K += (node_surface2[i].cota[j] + node_surface2[i].cotb[j]) * 0.25 * ((node_surface2[i].pos.x[0] - node_surface2[node_surface2[i].N[j]].pos.x[0]) * node_surface2[i].m_normal[0] + (node_surface2[i].pos.x[1] - node_surface2[node_surface2[i].N[j]].pos.x[1]) * node_surface2[i].m_normal[1]
-				+ (node_surface2[i].pos.x[2] - node_surface2[node_surface2[i].N[j]].pos.x[2]) * node_surface2[i].m_normal[2]);
-
-			//printf("k = %f, %d\n", node_surface2[i].K, i);
+				node_surface2[i].K += ((node_surface2[i].cota[j] + node_surface2[i].cotb[j]) * 0.25 * ((node_surface2[i].pos.x[0] - node_surface2[node_surface2[i].N[j]].pos.x[0]) * node_surface2[i].m_normal[0] 
+				+ (node_surface2[i].pos.x[1] - node_surface2[node_surface2[i].N[j]].pos.x[1]) * node_surface2[i].m_normal[1]
+				+ (node_surface2[i].pos.x[2] - node_surface2[node_surface2[i].N[j]].pos.x[2]) * node_surface2[i].m_normal[2]));
+				//printf("k = %f, %d\n", node_surface2[i].K, i);
+		}
+		if (node_surface2[i].K != NULL){
+			node_surface2[i].K = node_surface2[i].K;
+			printf("k = %f, %d\n", node_surface2[i].K, i);
 		}
 	}
 
