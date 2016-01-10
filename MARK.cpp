@@ -11,7 +11,7 @@
 
 #define judge 0.0001
 #define e_judge 0.000000001
-#define side_num 10
+#define side_num 20
 //#define node_Num_m 11
 //#define node_Num_n 21
 int node_Num_m[2];
@@ -44,7 +44,7 @@ double damp_k = 1000.0;
 double damp_k_normal = 20;
 double dv = 3.0;
 double node_Radius = 0.08;
-double View_from[3] = { 0.0, 50.0, 20.0 };
+double View_from[3] = { 0.0, 13.0, 50.0 };
 double View_to[3] = { 0.0, -15.0, 0.0 };
 double View_from2[3] = { 0.0, 13.0, 0.01 };
 double View_to2[3] = { 0.0, -10.0, 0.0 };
@@ -1818,7 +1818,7 @@ void node_simulation(int view_con){
 					+ (node_surface2[i].pos.x[2] - node_surface2[node_surface2[i].N[j]].pos.x[2]) * node_surface2[i].m_normal[2]));
 				//printf("k = %f, %d\n", node_surface2[i].K, i);
 				node_surface2[i].K = node_surface2[i].K;
-				printf("k = %f, %d\n", node_surface2[i].K, i);
+			//	printf("k = %f, %d\n", node_surface2[i].K, i);
 			}
 		}
 		}
@@ -1848,28 +1848,32 @@ void node_simulation(int view_con){
 	}
 	//printf("node_surface2[0] = %f, %f, %f\n", node_surface2[0].pos.x[0], node_surface2[0].pos.x[1], node_surface2[0].pos.x[2]);
 	/*printf("max = %lf min = %lf\n", max, min);*/
-	for (i = 0; i < num_count; i++){
+	for (i = 0; i < num_count * 0.5; i++){
 		glPushMatrix();
 		glCullFace(GL_BACK);
+		changing[0] = node_surface2[i].K * 2.0;
+		changing[1] = 0.05;
+		changing[2] = 0.1;
+		//printf("changing = %f\n", changing[0]);
 		//changing[0] = (node_surface2[i].color_grad - min) / (max - min);
 		//changing[1] = 0.0;
 		//changing[2] = 1.0 - (node_surface2[i].color_grad) / (max - min);
-		if (node_surface2[i].color_grad < (max - min) / 2.0){
-			changing[0] = (node_surface2[i].color_grad - min) / ((max + min) / 2.0 - min);
-			changing[1] = 0.1;
-			changing[2] = ((max + min) / 2.0 - node_surface2[i].color_grad) / ((max + min) / 2.0 - min);
-		}
-		else{
-			changing[0] = (max - node_surface2[i].color_grad) / ((max + min) / 2.0 - min);
-			changing[1] = (node_surface2[i].color_grad - (max + min) / 2.0) / ((max + min) / 2.0 - min);
-			changing[2] = 0.1;
-			//changing[0] = 1.0;
-			//changing[1] = 0.1;
-			//changing[2] = 0.1;
-			//printf("%f %f %f\n", changing[0], changing[1], changing[2]);
-		}
-		/*glTranslated((GLdouble)node_surface2[i].pos.x[0], (GLdouble)node_surface2[i].pos.x[2], (GLdouble)node_surface2[i].pos.x[1]);
-		if (view_con == 1) glutSolidSphere(node_Radius, 10, 10);
+		//if (node_surface2[i].color_grad < (max - min) / 2.0){
+		//	changing[0] = (node_surface2[i].color_grad - min) / ((max + min) / 2.0 - min);
+		//	changing[1] = 0.1;
+		//	changing[2] = ((max + min) / 2.0 - node_surface2[i].color_grad) / ((max + min) / 2.0 - min);
+		//}
+		//else{
+		//	changing[0] = (max - node_surface2[i].color_grad) / ((max + min) / 2.0 - min);
+		//	changing[1] = (node_surface2[i].color_grad - (max + min) / 2.0) / ((max + min) / 2.0 - min);
+		//	changing[2] = 0.1;
+		//	//changing[0] = 1.0;
+		//	//changing[1] = 0.1;
+		//	//changing[2] = 0.1;
+		//	//printf("%f %f %f\n", changing[0], changing[1], changing[2]);
+		//}
+		glTranslated((GLdouble)node_surface2[i].pos.x[0], (GLdouble)node_surface2[i].pos.x[2], (GLdouble)node_surface2[i].pos.x[1]);
+		/*if (view_con == 1) sphere(node_Radius, 10, changing);
 		else if (view_con == 2){
 			glMaterialfv(GL_FRONT, GL_DIFFUSE, changing);
 			glutSolidCube(node_Radius * 4.0);
@@ -1895,23 +1899,33 @@ void node_simulation(int view_con){
 				glCullFace(GL_FRONT);
 			}
 		}
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		//glEnable(GL_BLEND);
+		//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		if (view_con == 2){
-			glMaterialfv(GL_FRONT, GL_DIFFUSE, white);
+			//glMaterialfv(GL_FRONT, GL_DIFFUSE, white);
+			glColorMaterial(GL_FRONT, GL_DIFFUSE);
 		}
 		else{
-			glMaterialfv(GL_FRONT, GL_DIFFUSE, blue2);
+			//GLfloat curvature[] = { 5.0 * node_surface2[i].K, 0.0, 0.0, 0.5 };
+			//printf("%d\n", triangle_data[i].t[0]);
+			//blue2[0] = node_surface2[triangle_data[i].t[0]].K * 2.0;
+			//glMaterialfv(GL_FRONT, GL_DIFFUSE, blue2);
+			glColorMaterial(GL_FRONT, GL_DIFFUSE);
 		}
+		glDisable(GL_LIGHTING);
 		glBegin(GL_TRIANGLES);
 		//printf("%f %f %f %f\n", blue[0], blue[1], blue[2], blue[3]);
 		if (1){
 			//glNormal3d(-triangle_data[i].normal[0], -triangle_data[i].normal[2], -triangle_data[i].normal[1]);
 			glNormal3d(triangle_data[i].normal[0], triangle_data[i].normal[2], triangle_data[i].normal[1]);
 			//glNormal3d(-triangle_data[i].normal[0],- triangle_data[i].normal[1], -triangle_data[i].normal[2]);
+			glColor3d(node_surface2[triangle_data[i].t[0]].K, 0.5, 0.5);
 			glVertex3d(node_surface2[triangle_data[i].t[0]].pos.x[0], node_surface2[triangle_data[i].t[0]].pos.x[2], node_surface2[triangle_data[i].t[0]].pos.x[1]);
+			glColor3d(node_surface2[triangle_data[i].t[1]].K, 0.5, 0.5);
 			glVertex3d(node_surface2[triangle_data[i].t[1]].pos.x[0], node_surface2[triangle_data[i].t[1]].pos.x[2], node_surface2[triangle_data[i].t[1]].pos.x[1]);
+			glColor3d(node_surface2[triangle_data[i].t[2]].K, 0.5, 0.5);
 			glVertex3d(node_surface2[triangle_data[i].t[2]].pos.x[0], node_surface2[triangle_data[i].t[2]].pos.x[2], node_surface2[triangle_data[i].t[2]].pos.x[1]);
+			//glMaterialfv(GL_FRONT, GL_DIFFUSE, );
 		}
 		glEnd();
 	}
