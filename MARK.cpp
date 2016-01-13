@@ -44,7 +44,7 @@ double damp_k = 1000.0;
 double damp_k_normal = 20;
 double dv = 3.0;
 double node_Radius = 0.08;
-double View_from[3] = { 0.0, 13.0, 13.0 };
+double View_from[3] = { 0.0, 22.0, 13.0 };
 double View_to[3] = { 0.0, -15.0, 0.0 };
 double View_from2[3] = { 0.0, 13.0, 0.01 };
 double View_to2[3] = { 0.0, -10.0, 0.0 };
@@ -1337,25 +1337,60 @@ void initiation(){
 			}
 		}
 	}
-	////edge neighbor
-	//for (i = 0; i < num_count; i++){
-	//	if (node_surface2[i].edge_flag == 1){
-	//		for (j = 0; j < num_count; j++){
-	//			if (i != j){
-	//				if (sqrt(pow((node_surface2[i].pos.x[0] - node_surface2[j].pos.x[0]), 2.0) + pow((node_surface2[i].pos.x[1] - node_surface2[j].pos.x[1]), 2.0) + pow((node_surface2[i].pos.x[2] - node_surface2[j].pos.x[2]), 2.0)) < 1.5){
-	//					if (node_surface2[i].pos.x[0] < node_surface2[j].pos.x[0] && node_surface2[i].pos.x[1] > node_surface2[j].pos.x[1] && j < i + 6 && j > i - 6){
-	//						node_surface2[i].N[0] = j;
-	//						//printf("i = %d, N[0] = %d\n", i, node_surface2[i].N[0]);
-	//					}
-	//					if (node_surface2[i].pos.x[0] < node_surface2[j].pos.x[0] && node_surface2[i].pos.x[1] - node_surface2[j].pos.x[1] == 0 && j < i + 6 && j > i - 6){
-	//						node_surface2[i].N[1] = j;
-	//						printf("i = %d, N[1] = %d\n", i, node_surface2[i].N[1]);
-	//					}
-	//				}
-	//			}
-	//		}
-	//	}
-	//}
+	//edge neighbor
+	for (i = 0; i < num_count * 0.5; i++){
+		if (node_surface2[i].edge_flag == 1){
+			if (i != 0 && i != num_count * 0.5 - 1 && i != num_count * 0.5 - side_num){
+				//printf("%d\n", i);
+				for (j = 0; j < num_count * 0.5; j++){
+					if (i != j){
+						if (sqrt(pow((node_surface2[i].pos.x[0] - node_surface2[j].pos.x[0]), 2.0) + pow((node_surface2[i].pos.x[1] - node_surface2[j].pos.x[1]), 2.0) + pow((node_surface2[i].pos.x[2] - node_surface2[j].pos.x[2]), 2.0)) < 1.5){
+							if (node_surface2[i].pos.x[0] < node_surface2[j].pos.x[0] && node_surface2[i].pos.x[1] > node_surface2[j].pos.x[1]){
+								node_surface2[i].N[0] = j;
+								//printf("i = %d, N[0] = %d\n", i, node_surface2[i].N[0]);
+							}
+							if (node_surface2[i].pos.x[0] < node_surface2[j].pos.x[0] && node_surface2[i].pos.x[1] - node_surface2[j].pos.x[1] == 0){
+								node_surface2[i].N[1] = j;
+								//printf("i = %d, N[1] = %d\n", i, node_surface2[i].N[1]);
+							}
+							if (node_surface2[i].pos.x[0] < node_surface2[j].pos.x[0] && node_surface2[i].pos.x[1] < node_surface2[j].pos.x[1]){
+								node_surface2[i].N[2] = j;
+								//printf("N[1] = %d, %d \n", node_surface2[i].N[2], i);
+							}
+							if (node_surface2[i].pos.x[0] > node_surface2[j].pos.x[0] && node_surface2[i].pos.x[1] < node_surface2[j].pos.x[1]){
+								node_surface2[i].N[3] = j;
+								//printf("N[1] = %d, %d \n", node_surface2[i].N[3], i);
+							}
+							if (node_surface2[i].pos.x[0] > node_surface2[j].pos.x[0] && node_surface2[i].pos.x[1] - node_surface2[j].pos.x[1] == 0){
+								node_surface2[i].N[4] = j;
+								//printf("N[1] = %d, %d \n", node_surface2[i].N[4], i);
+							}
+							if (node_surface2[i].pos.x[0] > node_surface2[j].pos.x[0] && node_surface2[i].pos.x[1] > node_surface2[j].pos.x[1]){
+								node_surface2[i].N[5] = j;
+								//printf("N[5] = %d, %d \n", node_surface2[i].N[5], i);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	for (i = 0; i < num_count * 0.5; i++){
+		if (node_surface2[i].edge_flag == 1){
+			if (i != 0 && i != num_count * 0.5 - 1 && i != num_count * 0.5 - side_num){
+				//printf("%d\n", i);
+				for (j = 0; j < num_count * 0.5; j++){
+					if (i != j){
+						if (node_surface2[i].N[0] == NULL && i != 1){
+							node_surface2[i].N[0] = i - 1 + num_count * 0.5;
+							printf("i = %d, N[0] = %d\n", i, node_surface2[i].N[0]);
+						}
+					}
+				}
+			}
+		}
+	}
+
 	//printf("N[4] = %d\n", node_surface2[0].N[4]);
 	for (i = 0; i < num_count; i++){
 		if (node_surface2[i].edge_flag == 0){
@@ -1443,6 +1478,7 @@ void initiation(){
 			}
 		}
 	}
+	
 	for (i = 0; i < num_count; i++){
 		if (node_surface2[i].edge_flag == 0){
 			for (j = 0; j < 6; j++){
@@ -2030,7 +2066,7 @@ void node_simulation(int view_con){
 			//glMaterialfv(GL_FRONT, GL_DIFFUSE, blue2);
 			glColorMaterial(GL_FRONT, GL_DIFFUSE);
 		}
-		glDisable(GL_LIGHTING);
+		//glDisable(GL_LIGHTING);
 		glBegin(GL_TRIANGLES);
 		//printf("%f %f %f %f\n", blue[0], blue[1], blue[2], blue[3]);
 		if (1){
