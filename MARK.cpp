@@ -11,7 +11,7 @@
 
 #define judge 0.0001
 #define e_judge 0.000000001
-#define side_num 6
+#define side_num 20
 //#define node_Num_m 11
 //#define node_Num_n 21
 int node_Num_m[2];
@@ -44,7 +44,7 @@ double damp_k = 1000.0;
 double damp_k_normal = 20;
 double dv = 3.0;
 double node_Radius = 0.08;
-double View_from[3] = { 0.0, 25.0, 13.0 };
+double View_from[3] = { 0.0, 50.0, 50.0 };
 double View_to[3] = { 0.0, -15.0, 0.0 };
 double View_from2[3] = { 0.0, 13.0, 0.01 };
 double View_to2[3] = { 0.0, -10.0, 0.0 };
@@ -2018,6 +2018,8 @@ void node_simulation(int view_con){
 	int E = i + num_count * 0.5;
 	double min = 100000.0;
 	double max = -10.0;
+	double min_g = -10.0;
+	double max_g = 70.0;
 	double mass = 1000;
 	double kizami = 0.01;
 	double total_force[3] = { 0.0, 0.0, 0.0 };
@@ -2454,54 +2456,21 @@ void node_simulation(int view_con){
 		}
 	}
 
-	/*for (i = 0; i < num_count * 0.5; i++){
-		for (j = 0; j < 6; j++){
-			printf("xXn = %f, %d\n", (node_surface2[i].pos.x[0] - node_surface2[node_surface2[i].N[j]].pos.x[0]) * node_surface2[i].m_normal[0] , i);
-		}
-	}*/
-	/*for (i = 0; i < num_count * 0.5; i++){
-		for (j = 0; j < 6; j++){
-			if (node_surface2[i].cota[j] != NULL && node_surface2[i].cotb[j] != NULL){
-				printf("cota + cotb = %f, %f, %f, %d, %d\n", (node_surface2[i].cota[j] + node_surface2[i].cotb[j]), node_surface2[i].cota[j], node_surface2[i].cotb[j], i, j);
-			}
-		}
-	}*/
 	for (i = 0; i < num_count; i++){
 		if (i != 0 && i != num_count * 0.5 - 1 && i != num_count * 0.5 - side_num && i != num_count * 0.5 && i != num_count - 1 && i != num_count - side_num){
 			for (j = 0; j < 6; j++){
-				node_surface2[i].K += ((node_surface2[i].cota[j] + node_surface2[i].cotb[j]) * 0.25 * ((node_surface2[i].pos.x[0] - node_surface2[node_surface2[i].N[j]].pos.x[0]) * node_surface2[i].m_normal[0]
+				node_surface2[i].K += ((node_surface2[i].cota[j] + node_surface2[i].cotb[j]) * 0.25 * 1 / 6 * ((node_surface2[i].pos.x[0] - node_surface2[node_surface2[i].N[j]].pos.x[0]) * node_surface2[i].m_normal[0]
 					+ (node_surface2[i].pos.x[1] - node_surface2[node_surface2[i].N[j]].pos.x[1]) * node_surface2[i].m_normal[1]
 					+ (node_surface2[i].pos.x[2] - node_surface2[node_surface2[i].N[j]].pos.x[2]) * node_surface2[i].m_normal[2]));
-				//printf("k = %f, %d\n", node_surface2[i].K, i);
-				//node_surface2[i].K = node_surface2[i].K;
-				//printf("i = %d, K = %f\n", i, node_surface2[i].K);
 			}
 		}
 	}
-	//	else{
-	//		if (i < num_count * 0.5){
-	//			if (i != 0 && i != num_count * 0.5 - 1 && i != num_count * 0.5 - side_num){
-	//				for (j = 0; j < 6; j++){
-	//					node_surface2[i].K += ((node_surface2[i].cota[j] + node_surface2[i].cotb[j]) * 0.25 * ((node_surface2[i].pos.x[0] - node_surface2[node_surface2[i].N[j]].pos.x[0]) * node_surface2[i].m_normal[0]
-	//						+ (node_surface2[i].pos.x[1] - node_surface2[node_surface2[i].N[j]].pos.x[1]) * node_surface2[i].m_normal[1]
-	//						+ (node_surface2[i].pos.x[2] - node_surface2[node_surface2[i].N[j]].pos.x[2]) * node_surface2[i].m_normal[2]));
-	//					//printf("i = %d, K = %f\n",i, node_surface2[i].K);
-	//				}
-	//			}
-	//		}
-	//		else{
-	//			if (i != num_count * 0.5 && i != num_count - 1 && i != num_count - side_num){
-	//				for (j = 0; j < 6; j++){
-	//					node_surface2[i].K += ((node_surface2[i].cota[j] + node_surface2[i].cotb[j]) * 0.25 * ((node_surface2[i].pos.x[0] - node_surface2[node_surface2[i].N[j]].pos.x[0]) * node_surface2[i].m_normal[0]
-	//						+ (node_surface2[i].pos.x[1] - node_surface2[node_surface2[i].N[j]].pos.x[1]) * node_surface2[i].m_normal[1]
-	//						+ (node_surface2[i].pos.x[2] - node_surface2[node_surface2[i].N[j]].pos.x[2]) * node_surface2[i].m_normal[2]));
-	//				}
-	//			}
-	//		}
-	//	}
-	//}
+
 	for (i = 0; i < num_count; i++){
-		//printf("i = %d, K = %d\n",i, node_surface2[i].K);
+		//printf("i = %d, K = %f\n",i, node_surface2[i].K);
+	}
+	for (i = 0; i < num_count; i++){
+		//printf("i = %d, K = %f\n", i, (node_surface2[i].K - min_g) / (max_g - min_g));
 	}
 #endif
 	//for (i = 0; i < num_count; i++){
@@ -2531,9 +2500,15 @@ void node_simulation(int view_con){
 	for (i = 0; i < num_count * 0.5; i++){
 		glPushMatrix();
 		glCullFace(GL_BACK);
-		changing[0] = node_surface2[i].K * 2.0;
+		if (node_surface2[i].K > max_g){
+			max_g = node_surface2[i].K;
+		}
+		if (node_surface2[i].K < min_g){
+			min_g = node_surface2[i].K;
+		}
+		/*changing[0] = node_surface2[i].K * 2.0;
 		changing[1] = 0.05;
-		changing[2] = 0.1;
+		changing[2] = 0.1;*/
 		//printf("changing = %f\n", changing[0]);
 		//changing[0] = (node_surface2[i].color_grad - min) / (max - min);
 		//changing[1] = 0.0;
@@ -2560,6 +2535,7 @@ void node_simulation(int view_con){
 		}*/
 		glPopMatrix();
 	}
+
 	glPushMatrix();
 	//glTranslated( - rec_x / 2.0,0.0,  - rec_y / 2.0);
 	for (i = 0; i < tri_count; i++){
@@ -2607,18 +2583,23 @@ void node_simulation(int view_con){
 			//glVertex3d(node_surface2[triangle_data[i].t[2]].pos.x[0], node_surface2[triangle_data[i].t[2]].pos.x[2], node_surface2[triangle_data[i].t[2]].pos.x[1]);
 			////glMaterialfv(GL_FRONT, GL_DIFFUSE,);
 			for (j = 0; j < 3; j++){
-				if (node_surface2[triangle_data[i].t[j]].K < 0){
-					glColor3d(0.0, 1.0 + node_surface2[triangle_data[i].t[j]].K * 0.05, 0.0 - node_surface2[triangle_data[i].t[j]].K * 0.05);
+				//if (node_surface2[triangle_data[i].t[j]].K < 0){
+				if (node_surface2[triangle_data[i].t[j]].K < (max_g - min_g) / 2.0){
+					//glColor3d(0.0, 1.0 + node_surface2[triangle_data[i].t[j]].K * 0.05, 0.0 - node_surface2[triangle_data[i].t[j]].K * 0.05);
+					glColor3d((node_surface2[triangle_data[i].t[j]].K - min_g) / ((max_g + min_g) / 2 - min_g), 0.1, ((max_g + min_g) / 2.0 - node_surface2[triangle_data[i].t[j]].K) / ((max_g + min_g) / 2.0 - min_g));
 					glVertex3d(node_surface2[triangle_data[i].t[j]].pos.x[0], node_surface2[triangle_data[i].t[j]].pos.x[2], node_surface2[triangle_data[i].t[j]].pos.x[1]);
 				}
-				if (node_surface2[triangle_data[i].t[j]].K < 0){
-					glColor3d(0.0 + node_surface2[triangle_data[i].t[j]].K * 0.05, 1.0 - node_surface2[triangle_data[i].t[j]].K * 0.05, 1.0);
-					glVertex3d(node_surface2[triangle_data[i].t[j]].pos.x[0], node_surface2[triangle_data[i].t[j]].pos.x[2], node_surface2[triangle_data[i].t[j]].pos.x[1]);
-				}
+				//if (node_surface2[triangle_data[i].t[j]].K > 0){
 				else{
-					glColor3d(0.0 + node_surface2[triangle_data[i].t[j]].K * 0.05, 1.0 - node_surface2[triangle_data[i].t[j]].K * 0.05, 1.0 - node_surface2[triangle_data[i].t[j]].K * 0.05);
+					//glColor3d(0.0 + node_surface2[triangle_data[i].t[j]].K * 0.05, 1.0 - node_surface2[triangle_data[i].t[j]].K * 0.05, 1.0);
+					glColor3d((max_g - node_surface2[triangle_data[i].t[j]].K) / ((max_g + min_g) / 2 - min_g), (node_surface2[triangle_data[i].t[j]].K - (max_g + min_g) / 2.0) / ((max_g + min_g) / 2.0 - min_g), 0.1);
 					glVertex3d(node_surface2[triangle_data[i].t[j]].pos.x[0], node_surface2[triangle_data[i].t[j]].pos.x[2], node_surface2[triangle_data[i].t[j]].pos.x[1]);
 				}
+				//if (node_surface2[triangle_data[i].t[j]].K == 0){
+				//	glColor3d(0.0, 1.0, 0.0);
+				//	//glColor3d(0.0 + node_surface2[triangle_data[i].t[j]].K * 0.05, 1.0 - node_surface2[triangle_data[i].t[j]].K * 0.05, 1.0 - node_surface2[triangle_data[i].t[j]].K * 0.05);
+				//	glVertex3d(node_surface2[triangle_data[i].t[j]].pos.x[0], node_surface2[triangle_data[i].t[j]].pos.x[2], node_surface2[triangle_data[i].t[j]].pos.x[1]);
+				//}
 			}
 		}
 		glEnd();
